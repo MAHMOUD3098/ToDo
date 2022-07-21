@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:todo/presentation/screens/all_tasks/all_tasks_screen.dart';
 import 'package:todo/presentation/screens/completed_tasks/completed_tasks_screen.dart';
 import 'package:todo/presentation/screens/favorite_tasks/favorite_tasks_screen.dart';
+import 'package:todo/presentation/screens/schedule_screen/schedule_screen.dart';
 import 'package:todo/presentation/screens/uncompleted_tasks/uncompleted_tasks_screen.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/navigation.dart';
 import 'package:todo/presentation/utils/styles.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
 import 'package:todo/presentation/widgets/custom_divider.dart';
@@ -43,7 +45,9 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
             enableFeedback: false,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            onPressed: () {},
+            onPressed: () {
+              NavigationHelper.navigateTo(context, const ScheduleScreen());
+            },
           ),
         ],
       ),
