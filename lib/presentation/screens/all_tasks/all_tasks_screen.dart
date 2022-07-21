@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo/presentation/screens/add_task/add_task_screen.dart';
+import 'package:todo/presentation/utils/navigation.dart';
 import 'package:todo/presentation/widgets/custom_button.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
 
@@ -35,7 +37,12 @@ class AllTasksScreen extends StatelessWidget {
               ),
             ),
           ),
-          const CustomButton(text: 'Add a task')
+          CustomButton(
+            text: 'Add a task',
+            onPressed: () {
+              NavigationHelper.navigateTo(context, AddTaskScreen());
+            },
+          )
         ],
       ),
     );

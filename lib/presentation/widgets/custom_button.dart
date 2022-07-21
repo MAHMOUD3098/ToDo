@@ -3,10 +3,12 @@ import 'package:todo/presentation/utils/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
+  final void Function()? onPressed;
 
   const CustomButton({
     Key? key,
     required this.text,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -16,7 +18,7 @@ class CustomButton extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: OutlinedButton(
-          onPressed: () {},
+          onPressed: onPressed,
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(CustomColors.kGreenColor),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),

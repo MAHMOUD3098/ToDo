@@ -5,6 +5,8 @@ import 'package:todo/presentation/screens/favorite_tasks/favorite_tasks_screen.d
 import 'package:todo/presentation/screens/uncompleted_tasks/uncompleted_tasks_screen.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/styles.dart';
+import 'package:todo/presentation/widgets/custom_app_bar.dart';
+import 'package:todo/presentation/widgets/custom_divider.dart';
 
 class BoardLayout extends StatefulWidget {
   const BoardLayout({Key? key}) : super(key: key);
@@ -32,13 +34,9 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Board',
-        ),
-        leading: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-        ),
+      appBar: CustomAppBar(
+        title: 'Board',
+        hasActions: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_month_outlined),
@@ -57,11 +55,12 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Column(
                 children: [
-                  Divider(height: 1, color: CustomColors.kTabBarBorderColor),
+                  const CustomDivider(),
                   TabBar(
                     onTap: (value) {
                       controller.index = value;
                     },
+                    unselectedLabelColor: CustomColors.kInputFieldsTextColor,
                     isScrollable: true,
                     enableFeedback: false,
                     splashBorderRadius: BorderRadius.zero,
@@ -80,7 +79,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
                       Tab(text: 'Favorites'),
                     ],
                   ),
-                  Divider(height: 1, color: CustomColors.kTabBarBorderColor),
+                  const CustomDivider(),
                 ],
               ),
             ),
