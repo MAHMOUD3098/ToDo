@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:todo/presentation/screens/all_tasks/all_tasks_screen.dart';
+import 'package:todo/presentation/screens/completed_tasks/completed_tasks_screen.dart';
+import 'package:todo/presentation/screens/favorite_tasks/favorite_tasks_screen.dart';
+import 'package:todo/presentation/screens/uncompleted_tasks/uncompleted_tasks_screen.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/styles.dart';
-import 'package:todo/presentation/widgets/custom_button.dart';
-import 'package:todo/presentation/widgets/task_item.dart';
 
-class BoardScreen extends StatelessWidget {
-  const BoardScreen({Key? key}) : super(key: key);
+class BoardLayout extends StatefulWidget {
+  const BoardLayout({Key? key}) : super(key: key);
+
+  @override
+  State<BoardLayout> createState() => _BoardLayoutState();
+}
+
+class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStateMixin {
+  List<Widget> screens = const [
+    AllTasksScreen(),
+    CompletedTasksScreen(),
+    UncompletedTasksScreen(),
+    FavoriteTasksScreen(),
+  ];
+
+  late TabController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(vsync: this, length: screens.length);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +68,9 @@ class BoardScreen extends StatelessWidget {
                 children: [
                   Divider(height: 1, color: CustomColors.kTabBarBorderColor),
                   TabBar(
+                    onTap: (value) {
+                      controller.index = value;
+                    },
                     isScrollable: true,
                     enableFeedback: false,
                     splashBorderRadius: BorderRadius.zero,
@@ -70,37 +95,9 @@ class BoardScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: 12,
-                        itemBuilder: (context, index) {
-                          // TaskItem taskItem = TaskItem(
-                          //   id: cubit.tasks[index]['id'],
-                          //   taskName: cubit.tasks[index]['name'],
-                          //   taskDate: cubit.tasks[index]['date'],
-                          //   priority: int.parse(cubit.tasks[index]['priority'].toString()),
-                          //   isCompleted: cubit.tasks[index]['completed'] == 1 ? true : false,
-                          // );
-                          return const TaskItem(
-                            id: 1,
-                            isCompleted: true,
-                            priority: 1,
-                            taskTitle: 'Design team meeting',
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const CustomButton(text: 'Add a task')
-                ],
-              ),
+            child: TabBarView(
+              controller: controller,
+              children: screens,
             ),
           ),
         ],

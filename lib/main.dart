@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/presentation/screens/board_screen/board_screen.dart';
+import 'package:todo/presentation/screens/board_layout/board_layout.dart';
 import 'package:todo/presentation/utils/themes.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: Themes.lightTheme,
-      home: const BoardScreen(),
+      home: const BoardLayout(),
     );
   }
 }
