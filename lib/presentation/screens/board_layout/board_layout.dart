@@ -40,22 +40,13 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
           Icons.arrow_back_ios_new_rounded,
         ),
         actions: [
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.notifications_none_rounded),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.dehaze_rounded),
-                onPressed: () {},
-              ),
-            ],
-          )
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined),
+            enableFeedback: false,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onPressed: () {},
+          ),
         ],
       ),
       body: Column(
