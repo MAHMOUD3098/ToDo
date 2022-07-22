@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/day.dart';
+import 'package:todo/data/models/task.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
@@ -10,6 +13,7 @@ import 'package:todo/presentation/widgets/task_item.dart';
 class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   TasksScheduleCubit() : super(TasksScheduleInitState());
 
+  // ---------------------UI interactions--------------------- //
   static TasksScheduleCubit get(context) => BlocProvider.of<TasksScheduleCubit>(context);
 
   late TabController controller;
@@ -54,8 +58,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   }
 
   List<Widget> barViews = [];
-
-  List<TaskItem> tasks = const [
+  List<TaskItem> taskItems = const [
     TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
     TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
     TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
@@ -70,7 +73,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
           CustomBarView(
             dayName: 'day.dayName',
             dayDate: 'day.dayNumber.toString()',
-            tasks: tasks,
+            tasks: taskItems,
           ),
         );
       }
@@ -82,4 +85,11 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     controller.index = index;
     emit(WeekDayTappedState());
   }
+
+  // ---------------------UI interactions--------------------- //
+
+// ---------------------DB interactions--------------------- //
 }
+// ---------------------DB interactions--------------------- //
+
+
