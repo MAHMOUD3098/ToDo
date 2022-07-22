@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
 import 'package:todo/presentation/screens/add_task/add_task_screen.dart';
+import 'package:todo/presentation/screens/all_tasks/all_tasks_screen.dart';
+import 'package:todo/presentation/screens/completed_tasks/completed_tasks_screen.dart';
+import 'package:todo/presentation/screens/favorite_tasks/favorite_tasks_screen.dart';
 import 'package:todo/presentation/screens/schedule_screen/schedule_screen.dart';
+import 'package:todo/presentation/screens/uncompleted_tasks/uncompleted_tasks_screen.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/navigation.dart';
 import 'package:todo/presentation/utils/styles.dart';
@@ -20,12 +24,21 @@ class BoardLayout extends StatefulWidget {
 
 class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStateMixin {
   late ToDoAppCubit toDoAppCubit;
+  List<Widget> screens = [];
 
   @override
   void initState() {
     super.initState();
     toDoAppCubit = ToDoAppCubit.get(context);
-    toDoAppCubit.controller = TabController(vsync: this, length: toDoAppCubit.screens.length);
+
+    screens = [
+      AllTasksScreen(toDoAppCubit: toDoAppCubit),
+      CompletedTasksScreen(toDoAppCubit: toDoAppCubit),
+      UncompletedTasksScreen(toDoAppCubit: toDoAppCubit),
+      FavoriteTasksScreen(toDoAppCubit: toDoAppCubit),
+    ];
+
+    toDoAppCubit.controller = TabController(vsync: this, length: screens.length);
   }
 
   @override
@@ -54,7 +67,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
           body: Column(
             children: [
               DefaultTabController(
-                length: toDoAppCubit.screens.length,
+                length: screens.length,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Column(
@@ -96,7 +109,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
                       Expanded(
                         child: TabBarView(
                           controller: toDoAppCubit.controller,
-                          children: toDoAppCubit.screens,
+                          children: screens,
                         ),
                       ),
                       CustomButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/styles.dart';
@@ -80,6 +81,8 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
               onChanged: (String? value) {
                 setState(() {
                   _chosenValue = value;
+                  // AddTaskCubit()..remindDropDownChosenValue = value!;
+                  // print(AddTaskCubit()..remindDropDownChosenValue.toString());
                 });
               },
             ),

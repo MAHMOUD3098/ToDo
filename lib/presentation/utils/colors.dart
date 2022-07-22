@@ -2,7 +2,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class CustomColors {
   static HexColor kBlueColor = HexColor('#42A0FF');
-  static HexColor kOrangeColor = HexColor('#F9C50B');
+  static HexColor kOrangeColor = HexColor('#FF9D42');
   static HexColor kYellowColor = HexColor('#F9C50B');
   static HexColor kRedColor = HexColor('#FF5147');
   static HexColor kGreenColor = HexColor('#25C06D');
