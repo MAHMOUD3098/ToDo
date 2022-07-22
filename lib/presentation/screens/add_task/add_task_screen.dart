@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/data/models/task.dart';
+import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/domain/blocs/add_task_bloc/states.dart';
+import 'package:todo/domain/blocs/app_bloc/cubit.dart';
+import 'package:todo/presentation/screens/board_layout/board_layout.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
+import 'package:todo/presentation/utils/navigation.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
 import 'package:todo/presentation/widgets/custom_button.dart';
 import 'package:todo/presentation/widgets/custom_divider.dart';
@@ -160,19 +165,18 @@ class AddTaskScreen extends StatelessWidget {
                         CustomButton(
                           text: 'Create Task',
                           onPressed: () {
-                            if (_addTaskFormKey.currentState!.validate()) {
-                              addTaskCubit.addTask(
-                                Task(
-                                  addTaskCubit.titleController.text,
-                                  addTaskCubit.dateController.text,
-                                  addTaskCubit.startTimeController.text,
-                                  addTaskCubit.endTimeController.text,
-                                  addTaskCubit.remindDropDownChosenValue,
-                                  addTaskCubit.repeatDropDownChosenValue,
-                                  '1',
-                                ),
-                              );
-                            }
+                            addTaskCubit.addTask(
+                              Task(
+                                addTaskCubit.titleController.text,
+                                addTaskCubit.dateController.text,
+                                addTaskCubit.startTimeController.text,
+                                addTaskCubit.endTimeController.text,
+                                addTaskCubit.remindDropDownChosenValue,
+                                addTaskCubit.repeatDropDownChosenValue,
+                                '1',
+                              ),
+                            );
+                            if (_addTaskFormKey.currentState!.validate()) {}
                           },
                         ),
                       ],

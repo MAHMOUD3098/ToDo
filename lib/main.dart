@@ -4,9 +4,11 @@ import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/cubit.dart';
 import 'package:todo/presentation/screens/board_layout/board_layout.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/themes.dart';
 
 void main() {
+  setup(); //setup the singletone concept for the project
   runApp(const MyApp());
 }
 

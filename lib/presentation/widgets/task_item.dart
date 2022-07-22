@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/styles.dart';
 
@@ -26,7 +27,9 @@ class TaskItem extends StatelessWidget {
         startActionPane: ActionPane(
           motion: const StretchMotion(),
           dismissible: DismissiblePane(
-            onDismissed: () {},
+            onDismissed: () {
+              ToDoAppCubit().deleteTask(id);
+            },
           ),
           children: [
             SlidableAction(
@@ -34,7 +37,9 @@ class TaskItem extends StatelessWidget {
               label: 'delete',
               backgroundColor: Colors.red,
               icon: Icons.delete,
-              onPressed: (_) {},
+              onPressed: (_) {
+                ToDoAppCubit().deleteTask(id);
+              },
             ),
           ],
         ),

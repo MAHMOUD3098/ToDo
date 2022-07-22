@@ -4,6 +4,7 @@
     "cupertino",
     "dehaze",
     "hexcolor",
+    "singletone",
     "sqflite",
     "vsync"
   ]

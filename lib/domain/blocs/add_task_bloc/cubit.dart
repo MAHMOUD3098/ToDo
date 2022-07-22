@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/task.dart';
+import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/states.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
+import 'package:todo/presentation/utils/navigation.dart';
 
 class AddTaskCubit extends Cubit<AddTaskStates> {
   AddTaskCubit() : super(AddTaskInitialState());
@@ -52,19 +56,19 @@ class AddTaskCubit extends Cubit<AddTaskStates> {
   // ---------------------DB interactions--------------------- //
 
   void addTask(Task task) {
-    // print(task.taskTitle);
-    // print(task.taskDate);
-    // print(task.startTime);
-    // print(task.endTime);
-    // print(task.remind);
-    // print(task.repeat);
-    // print(task.priority);
+    // 'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("${task.taskTitle}", "${task.taskDate}", ${task.startTime}, ${task.endTime}, ${task.remind}, ${task.repeat}  ${task.priority}, 0)',
 
-    // print(ToDoAppCubit().database);
-    ToDoAppCubit().addTask(task);
-    emit(CreateTaskButtonPressedState());
+    locator.get<ToDoAppRepository>().database.transaction((txn) {
+      return txn
+          .rawInsert(
+        'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("tt", "tt", "tt", "tt", "tt", "tt", 1, 0)',
+      )
+          .then((value) {
+        emit(CreateTaskButtonPressedState());
+        ToDoAppCubit().getData(locator.get<ToDoAppRepository>().database);
+      });
+    });
   }
-
   // ---------------------DB interactions--------------------- //
 
 }

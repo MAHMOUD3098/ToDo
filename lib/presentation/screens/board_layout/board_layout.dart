@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
 import 'package:todo/presentation/screens/add_task/add_task_screen.dart';
@@ -9,6 +10,7 @@ import 'package:todo/presentation/screens/favorite_tasks/favorite_tasks_screen.d
 import 'package:todo/presentation/screens/schedule_screen/schedule_screen.dart';
 import 'package:todo/presentation/screens/uncompleted_tasks/uncompleted_tasks_screen.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/navigation.dart';
 import 'package:todo/presentation/utils/styles.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
@@ -38,14 +40,19 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
       FavoriteTasksScreen(toDoAppCubit: toDoAppCubit),
     ];
 
-    toDoAppCubit.controller = TabController(vsync: this, length: screens.length);
+    locator.get<ToDoAppRepository>().controller = TabController(vsync: this, length: screens.length);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ToDoAppCubit, ToDoAppStates>(
-      listener: (context, state) => {
-        debugPrint(state.toString()),
+      listener: (context, state) {
+        debugPrint(state.toString());
       },
       builder: (context, state) {
         return Scaffold(
@@ -108,7 +115,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
                     children: [
                       Expanded(
                         child: TabBarView(
-                          controller: toDoAppCubit.controller,
+                          controller: locator.get<ToDoAppRepository>().controller,
                           children: screens,
                         ),
                       ),
