@@ -8,5 +8,6 @@ class CustomDivider extends StatelessWidget {
   Widget build(BuildContext context) => Divider(
         height: 2,
         color: CustomColors.kTabBarBorderColor,
+        thickness: 2,
       );
 }
