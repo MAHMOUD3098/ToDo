@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -21,6 +20,7 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
   // --------------------- UI --------------------- //
 
   // ---------------------DB interactions--------------------- //
+
   String path = '';
   void createDatabase() async {
     var databasesPath = await getDatabasesPath();
@@ -48,35 +48,24 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
   }
 
   void getData(Database db) async {
-    emit(LoadingState());
     locator.get<ToDoAppRepository>().allTasks = await db.rawQuery('SELECT * FROM Tasks');
     emit(GetDataState());
   }
 
-  // void addTask(Task task) {
-  //   // 'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("${task.taskTitle}", "${task.taskDate}", ${task.startTime}, ${task.endTime}, ${task.remind}, ${task.repeat}  ${task.priority}, 0)',
-
-  //   locator.get<ToDoAppRepository>().database.transaction((txn) {
-  //     return txn
-  //         .rawInsert(
-  //       'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("tt", "tt", "tt", "tt", "tt", "tt", 1, 0)',
-  //     )
-  //         .then((value) {
-  //       emit(AddTaskState());
-  //       getData(locator.get<ToDoAppRepository>().database);
-  //     });
-  //   });
-  // }
-
-  // void updateTask(Task task, int taskId) async {
-  //   database.rawUpdate('UPDATE Tasks SET name = ?, date = ?, priority = ? WHERE id = ?', [task.taskName, task.taskDate, task.priority, taskId]).then(
-  //       (value) => null);
-  //   emit(UpdateTaskState());
-  //   getData(database);
-  // }
+  void addTask(Task task) {
+    locator.get<ToDoAppRepository>().database.transaction((txn) {
+      return txn
+          .rawInsert(
+        'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0)',
+      )
+          .then((value) {
+        getData(locator.get<ToDoAppRepository>().database);
+        emit(AddTaskState());
+      });
+    });
+  }
 
   void deleteTask(int id) {
-    emit(LoadingState());
     locator.get<ToDoAppRepository>().database.rawDelete('DELETE FROM Tasks WHERE id = ?', ['$id']).then((value) {
       emit(DeleteTaskState());
       getData(locator.get<ToDoAppRepository>().database);

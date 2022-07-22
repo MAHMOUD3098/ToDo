@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/day.dart';
-import 'package:todo/data/models/task.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';

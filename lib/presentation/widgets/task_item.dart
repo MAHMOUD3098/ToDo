@@ -20,6 +20,7 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ToDoAppCubit toDoAppCubit = ToDoAppCubit.get(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Slidable(
@@ -28,7 +29,7 @@ class TaskItem extends StatelessWidget {
           motion: const StretchMotion(),
           dismissible: DismissiblePane(
             onDismissed: () {
-              ToDoAppCubit().deleteTask(id);
+              toDoAppCubit.deleteTask(id);
             },
           ),
           children: [
@@ -38,7 +39,7 @@ class TaskItem extends StatelessWidget {
               backgroundColor: Colors.red,
               icon: Icons.delete,
               onPressed: (_) {
-                ToDoAppCubit().deleteTask(id);
+                toDoAppCubit.deleteTask(id);
               },
             ),
           ],

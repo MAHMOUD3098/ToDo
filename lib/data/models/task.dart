@@ -5,7 +5,7 @@ class Task {
   final String endTime;
   final String remind;
   final String repeat;
-  final String priority;
+  final int priority;
 
   Task(
     this.taskTitle,
