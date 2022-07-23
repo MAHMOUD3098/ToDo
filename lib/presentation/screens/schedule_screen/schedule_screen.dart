@@ -22,8 +22,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
     super.initState();
     tasksScheduleCubit = TasksScheduleCubit.get(context);
 
-    locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getNextWeek(DateTime(2022,2,27));
-    tasksScheduleCubit.controller = TabController(length: locator.get<ScheduleScreenRepository>().weekDays.length, vsync: this);
+    locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getNextWeek(DateTime.now());
+    locator.get<ScheduleScreenRepository>().controller = TabController(
+      length: locator.get<ScheduleScreenRepository>().weekDays.length,
+      vsync: this,
+    );
+    locator.get<ScheduleScreenRepository>().controller.addListener(() {
+      setState(() {});
+    });
+
     tasksScheduleCubit.getBarViews();
   }
 
@@ -40,7 +47,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
               CustomWeekDaysTabBar(tasksScheduleCubit: tasksScheduleCubit),
               Expanded(
                 child: TabBarView(
-                  controller: tasksScheduleCubit.controller,
+                  controller: locator.get<ScheduleScreenRepository>().controller,
                   physics: const BouncingScrollPhysics(),
                   children: tasksScheduleCubit.barViews,
                 ),

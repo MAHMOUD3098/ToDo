@@ -8,6 +8,7 @@ import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_bar_view.dart';
+import 'package:todo/presentation/widgets/custom_weekday_container.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
 
 class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
@@ -15,7 +16,6 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
 
   static TasksScheduleCubit get(context) => BlocProvider.of<TasksScheduleCubit>(context);
 
-  late TabController controller;
   List<Widget> barViews = [];
   List<TaskItem> taskItems = const [
     TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
@@ -26,7 +26,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   ];
 
   void tapWeekDay(int index) {
-    controller.index = index;
+    locator.get<ScheduleScreenRepository>().controller.index = index;
     emit(WeekDayTappedState());
   }
 
@@ -35,8 +35,8 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
       for (int i = 0; i < locator.get<ScheduleScreenRepository>().weekDays.length; i++) {
         barViews.add(
           CustomBarView(
-            dayName: 'day.dayName',
-            dayDate: 'day.dayNumber.toString()',
+            dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
+            dayDate: locator.get<ScheduleScreenRepository>().weekDays[i].dayNumber.toString(),
             tasks: taskItems,
           ),
         );
@@ -47,31 +47,8 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
 
   List<Widget> getWeekDaysContainers(List<Day> weekDays) {
     List<Widget> list = [];
-    for (var i = 0; i < weekDays.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-          decoration: BoxDecoration(
-            color: controller.index == i ? CustomColors.kGreenColor : CustomColors.kWhiteColor,
-            borderRadius: Constants.kWeekDayContainerBorderRadius,
-          ),
-          child: Center(
-            child: Column(
-              children: [
-                Text(
-                  weekDays[i].dayName,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  weekDays[i].dayNumber.toString(),
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+    for (int i = 0; i < weekDays.length; i++) {
+      list.add(CustomWeekDayContainer(index: i));
     }
     return list;
   }

@@ -26,7 +26,7 @@ class CustomWeekDaysTabBar extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: TabBar(
-                  controller: tasksScheduleCubit.controller,
+                  controller: locator.get<ScheduleScreenRepository>().controller,
                   labelPadding: const EdgeInsets.symmetric(horizontal: 5),
                   onTap: (value) {
                     tasksScheduleCubit.tapWeekDay(value);
