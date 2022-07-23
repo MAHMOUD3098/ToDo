@@ -81,6 +81,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
                     children: [
                       const CustomDivider(),
                       TabBar(
+                        controller: locator.get<ToDoAppRepository>().controller,
                         onTap: (value) {
                           toDoAppCubit.tapBarTapped(value);
                         },
