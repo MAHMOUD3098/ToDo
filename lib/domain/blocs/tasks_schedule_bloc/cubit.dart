@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:todo/data/models/day.dart';
 import 'package:todo/data/repositories/schedule_screen_repository.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
-import 'package:todo/presentation/utils/colors.dart';
-import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_bar_view.dart';
 import 'package:todo/presentation/widgets/custom_weekday_container.dart';
@@ -17,17 +15,38 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   static TasksScheduleCubit get(context) => BlocProvider.of<TasksScheduleCubit>(context);
 
   List<Widget> barViews = [];
-  List<TaskItem> taskItems = const [
-    TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
-    TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
-    TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
-    TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
-    TaskItem(id: 1, taskTitle: ' taskTitle', priority: 1, isCompleted: true),
-  ];
+  List<TaskItem> taskItems = const [];
 
   void tapWeekDay(int index) {
     locator.get<ScheduleScreenRepository>().controller.index = index;
+
     emit(WeekDayTappedState());
+  }
+
+  String getMonthName(int monthNum) {
+    Map<int, String> months = {
+      1: 'Jan',
+      2: 'Feb',
+      3: 'Mar',
+      4: 'Apr',
+      5: 'May',
+      6: 'Jun',
+      7: 'Jul',
+      8: 'Aug',
+      9: 'Sep',
+      10: 'Oct',
+      11: 'Nov',
+      12: 'Dec'
+    };
+    return months[monthNum]!;
+  }
+
+  String getDate(int index) {
+    int dayNum = locator.get<ScheduleScreenRepository>().weekDays[index].dayNumber;
+    String monthName = getMonthName(locator.get<ScheduleScreenRepository>().weekDays[index].monthOfDay);
+    int year = locator.get<ScheduleScreenRepository>().weekDays[index].yearOfDay;
+
+    return '$dayNum $monthName, $year';
   }
 
   List<Widget> getBarViews() {
@@ -36,7 +55,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
         barViews.add(
           CustomBarView(
             dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
-            dayDate: locator.get<ScheduleScreenRepository>().weekDays[i].dayNumber.toString(),
+            dayDate: getDate(i),
             tasks: taskItems,
           ),
         );
@@ -61,7 +80,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
 
     var dateTime = DateTime(year, month, day);
 
-    return Day(DateFormat('EEEE').format(dateTime).substring(0, 3), day);
+    return Day(DateFormat('EEEE').format(dateTime).substring(0, 3), day, month, year);
   }
 
   int getNumOfDays(int month) {
