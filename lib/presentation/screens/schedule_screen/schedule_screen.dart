@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/data/repositories/schedule_screen_repository.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/cubit.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
 import 'package:todo/presentation/widgets/custom_weekday_tab_bar.dart';
 
@@ -19,8 +21,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     tasksScheduleCubit = TasksScheduleCubit.get(context);
-    tasksScheduleCubit.controller = TabController(length: tasksScheduleCubit.weekDays.length, vsync: this);
 
+    locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getNextWeek(DateTime(2022,2,27));
+    tasksScheduleCubit.controller = TabController(length: locator.get<ScheduleScreenRepository>().weekDays.length, vsync: this);
     tasksScheduleCubit.getBarViews();
   }
 
