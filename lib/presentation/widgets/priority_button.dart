@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:todo/presentation/utils/styles.dart';
 
 class PriorityButton extends StatelessWidget {
-  final HexColor priorityColor;
+  final Color priorityColor, priorityTextColor;
   final String priorityText;
   final void Function()? onTap;
 
@@ -12,6 +11,7 @@ class PriorityButton extends StatelessWidget {
     required this.priorityColor,
     required this.priorityText,
     this.onTap,
+    required this.priorityTextColor,
   }) : super(key: key);
 
   @override
@@ -32,7 +32,7 @@ class PriorityButton extends StatelessWidget {
             child: Center(
               child: Text(
                 priorityText,
-                style: CustomStyles.priorityButtonTextStyle,
+                style: CustomStyles.priorityButtonTextStyle.copyWith(color: priorityTextColor),
                 softWrap: false,
                 overflow: TextOverflow.fade,
               ),

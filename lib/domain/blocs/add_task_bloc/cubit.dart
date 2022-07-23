@@ -9,6 +9,8 @@ class AddTaskCubit extends Cubit<AddTaskStates> {
 
   static AddTaskCubit get(context) => BlocProvider.of<AddTaskCubit>(context);
 
+  int selectedPriority = 0;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController startTimeController = TextEditingController();
@@ -26,6 +28,16 @@ class AddTaskCubit extends Cubit<AddTaskStates> {
   HexColor highPriorityColor = CustomColors.kOrangeColor;
   HexColor criticalPriorityColor = CustomColors.kRedColor;
 
+  void resetAddTaskScreen() {
+    resetPriority();
+    titleController = TextEditingController();
+    dateController = TextEditingController();
+    startTimeController = TextEditingController();
+    endTimeController = TextEditingController();
+    remindDropDownChosenValue = '';
+    repeatDropDownChosenValue = '';
+  }
+
   void resetPriority() {
     isLowPrioritySelected = false;
     isMediumPrioritySelected = false;
@@ -40,7 +52,7 @@ class AddTaskCubit extends Cubit<AddTaskStates> {
     priority == 2 ? isMediumPrioritySelected = true : false;
     priority == 3 ? isHighPrioritySelected = true : false;
     priority == 4 ? isCriticalPrioritySelected = true : false;
-    emit(CreateTaskButtonPressedState());
+    emit(PriorityButtonPressedState());
   }
 
   // ---------------------DB interactions--------------------- //

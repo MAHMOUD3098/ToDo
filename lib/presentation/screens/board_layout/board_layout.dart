@@ -122,19 +122,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
                       CustomButton(
                         text: 'Add a task',
                         onPressed: () {
-                          // toDoAppCubit.addTask(
-                          //   Task(
-                          //     'addTaskCubit.titleController.text',
-                          //     'addTaskCubit.dateController.text',
-                          //     'addTaskCubit.startTimeController.text',
-                          //     'addTaskCubit.endTimeController.text',
-                          //     'addTaskCubit.remindDropDownChosenValue',
-                          //     'addTaskCubit.repeatDropDownChosenValue',
-                          //     '1',
-                          //   ),
-                          // );
-
-                          NavigationHelper.navigateTo(context, AddTaskScreen());
+                          NavigationHelper.navigateTo(context, const AddTaskScreen());
                         },
                       )
                     ],

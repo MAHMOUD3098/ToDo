@@ -4,18 +4,36 @@ import 'package:todo/data/models/task.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/domain/blocs/add_task_bloc/states.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
-import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
 import 'package:todo/presentation/widgets/custom_button.dart';
 import 'package:todo/presentation/widgets/custom_divider.dart';
 import 'package:todo/presentation/widgets/custom_dropdown_menu.dart';
 import 'package:todo/presentation/widgets/custom_text_form_field.dart';
-import 'package:todo/presentation/widgets/priority_button.dart';
+import 'package:todo/presentation/widgets/priorities_field.dart';
 
-class AddTaskScreen extends StatelessWidget {
-  AddTaskScreen({Key? key}) : super(key: key);
+class AddTaskScreen extends StatefulWidget {
+  const AddTaskScreen({Key? key}) : super(key: key);
 
+  @override
+  State<AddTaskScreen> createState() => _AddTaskScreenState();
+}
+
+class _AddTaskScreenState extends State<AddTaskScreen> {
   final _addTaskFormKey = GlobalKey<FormState>();
+
+  late AddTaskCubit addTaskCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    addTaskCubit = AddTaskCubit.get(context);
+    addTaskCubit.resetAddTaskScreen();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +42,6 @@ class AddTaskScreen extends StatelessWidget {
         debugPrint(state.toString()),
       },
       builder: (context, state) {
-        AddTaskCubit addTaskCubit = AddTaskCubit.get(context);
         return Scaffold(
           appBar: const CustomAppBar(
             title: 'Add Task',
@@ -40,7 +57,6 @@ class AddTaskScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                   child: Form(
                     key: _addTaskFormKey,
-                    // autovalidateMode: AutovalidateMode.always,
                     child: Column(
                       children: [
                         CustomTextFormField(
@@ -106,74 +122,26 @@ class AddTaskScreen extends StatelessWidget {
                           validationErrorMessage: 'validationErrorMessage',
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: PriorityButton(
-                                onTap: () {
-                                  addTaskCubit.selectPriority(1);
-                                  // selectedPriority = 1;
-                                  // setState(() {});
-                                },
-                                priorityColor:
-                                    addTaskCubit.isLowPrioritySelected ? CustomColors.kBlueColor : CustomColors.kInputFieldsBackgroundColor,
-                                priorityText: 'Low',
-                              ),
-                            ),
-                            Expanded(
-                              child: PriorityButton(
-                                onTap: () {
-                                  addTaskCubit.selectPriority(2);
-                                  // selectedPriority = 1;
-                                  // setState(() {});
-                                },
-                                priorityColor:
-                                    addTaskCubit.isMediumPrioritySelected ? CustomColors.kYellowColor : CustomColors.kInputFieldsBackgroundColor,
-                                priorityText: 'Medium',
-                              ),
-                            ),
-                            Expanded(
-                              child: PriorityButton(
-                                onTap: () {
-                                  addTaskCubit.selectPriority(3); // selectedPriority = 1;
-                                  // setState(() {});
-                                },
-                                priorityColor:
-                                    addTaskCubit.isHighPrioritySelected ? CustomColors.kOrangeColor : CustomColors.kInputFieldsBackgroundColor,
-                                priorityText: 'High',
-                              ),
-                            ),
-                            Expanded(
-                              child: PriorityButton(
-                                onTap: () {
-                                  addTaskCubit.selectPriority(4);
-                                  // selectedPriority = 1;
-                                  // setState(() {});
-                                },
-                                priorityColor:
-                                    addTaskCubit.isCriticalPrioritySelected ? CustomColors.kRedColor : CustomColors.kInputFieldsBackgroundColor,
-                                priorityText: 'Critical',
-                              ),
-                            ),
-                          ],
-                        ),
+                        const PrioritiesField(),
                         const SizedBox(height: 20),
                         CustomButton(
                           text: 'Create Task',
                           onPressed: () {
-                            ToDoAppCubit cubit = ToDoAppCubit.get(context);
-                            cubit.addTask(
-                              Task(
-                                addTaskCubit.titleController.text,
-                                addTaskCubit.dateController.text,
-                                addTaskCubit.startTimeController.text,
-                                addTaskCubit.endTimeController.text,
-                                addTaskCubit.remindDropDownChosenValue,
-                                addTaskCubit.repeatDropDownChosenValue,
-                                1,
-                              ),
-                            );
-                            if (_addTaskFormKey.currentState!.validate()) {}
+                            if (_addTaskFormKey.currentState!.validate()) {
+                              ToDoAppCubit cubit = ToDoAppCubit.get(context);
+                              if (cubit.addTask(
+                                Task(
+                                  addTaskCubit.titleController.text,
+                                  addTaskCubit.dateController.text,
+                                  addTaskCubit.startTimeController.text,
+                                  addTaskCubit.endTimeController.text,
+                                  addTaskCubit.remindDropDownChosenValue,
+                                  addTaskCubit.repeatDropDownChosenValue,
+                                  addTaskCubit.selectedPriority,
+                                ),
+                              )) {}
+                              Navigator.pop(context);
+                            }
                           },
                         ),
                       ],

@@ -1,9 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/task.dart';
 import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
+import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/locator.dart';
 
 class ToDoAppCubit extends Cubit<ToDoAppStates> {
@@ -16,6 +18,45 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
   void tapBarTapped(int index) {
     locator.get<ToDoAppRepository>().controller.index = index;
     emit(TapBarTappedState());
+  }
+
+  void changeCheckBoxValue(bool value, int id) {
+    locator.get<ToDoAppRepository>().allTasks.forEach((element) {
+      if (element['id'] == id) {
+        locator.get<ToDoAppRepository>().database.rawUpdate('UPDATE Tasks SET is_completed = ? WHERE id = ?', [(value ? 1 : 0), '$id']).then((value) {
+          emit(ChangedTaskItemCheckBoxValueState());
+          getData(locator.get<ToDoAppRepository>().database);
+        });
+      }
+    });
+  }
+
+  HexColor getCheckBoxColor(int id) {
+    HexColor checkboxColor = CustomColors.kInputFieldsBackgroundColor;
+    locator.get<ToDoAppRepository>().allTasks.forEach((element) {
+      if (element['id'] == id) {
+        switch (element['priority']) {
+          case 1:
+            checkboxColor = CustomColors.kBlueColor;
+            break;
+
+          case 2:
+            checkboxColor = CustomColors.kYellowColor;
+            break;
+
+          case 3:
+            checkboxColor = CustomColors.kOrangeColor;
+            break;
+
+          case 4:
+            checkboxColor = CustomColors.kRedColor;
+            break;
+
+          default:
+        }
+      }
+    });
+    return checkboxColor;
   }
   // --------------------- UI --------------------- //
 
@@ -49,20 +90,29 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
 
   void getData(Database db) async {
     locator.get<ToDoAppRepository>().allTasks = await db.rawQuery('SELECT * FROM Tasks');
+    // locator.get<ToDoAppRepository>().allTasks.forEach(
+    //   (element) {
+    //     print(element);
+    //   },
+    // );
     emit(GetDataState());
   }
 
-  void addTask(Task task) {
+  bool addTask(Task task) {
     locator.get<ToDoAppRepository>().database.transaction((txn) {
       return txn
           .rawInsert(
         'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0)',
       )
           .then((value) {
-        getData(locator.get<ToDoAppRepository>().database);
-        emit(AddTaskState());
+        if (value != 0) {
+          getData(locator.get<ToDoAppRepository>().database);
+          emit(AddTaskState());
+          return true;
+        }
       });
     });
+    return false;
   }
 
   void deleteTask(int id) {

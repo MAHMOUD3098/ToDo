@@ -16,7 +16,7 @@ class GetDataState extends ToDoAppStates {}
 
 class AddTaskState extends ToDoAppStates {}
 
-class CheckBoxPressedState extends ToDoAppStates {}
+class ChangedTaskItemCheckBoxValueState extends ToDoAppStates {}
 
 class DeleteTaskState extends ToDoAppStates {}
 

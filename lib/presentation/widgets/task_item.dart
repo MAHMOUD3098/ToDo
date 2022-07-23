@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
-import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/styles.dart';
 
 class TaskItem extends StatelessWidget {
@@ -55,15 +54,20 @@ class TaskItem extends StatelessWidget {
                 child: Transform.scale(
                   scale: 1.4,
                   child: Checkbox(
-                    value: true,
+                    value: isCompleted,
+                    fillColor: MaterialStateProperty.all(toDoAppCubit.getCheckBoxColor(id)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                     side: BorderSide(
-                      color: CustomColors.kBlueColor,
+                      color: toDoAppCubit.getCheckBoxColor(id),
                       width: 1.5,
                     ),
-                    onChanged: (val) {},
+                    onChanged: (value) {
+                      if (value != null) {
+                        toDoAppCubit.changeCheckBoxValue(value, id);
+                      }
+                    },
                   ),
                 ),
               ),
