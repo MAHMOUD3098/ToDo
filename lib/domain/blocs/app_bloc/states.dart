@@ -18,6 +18,8 @@ class AddTaskState extends ToDoAppStates {}
 
 class ChangedTaskItemCheckBoxValueState extends ToDoAppStates {}
 
+class AddToFavoriteButtonPressedState extends ToDoAppStates {}
+
 class DeleteTaskState extends ToDoAppStates {}
 
 class SelectPriorityState extends ToDoAppStates {}

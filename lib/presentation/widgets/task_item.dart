@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
+import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/styles.dart';
 
 class TaskItem extends StatelessWidget {
@@ -21,11 +24,12 @@ class TaskItem extends StatelessWidget {
   Widget build(BuildContext context) {
     ToDoAppCubit toDoAppCubit = ToDoAppCubit.get(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Slidable(
         key: UniqueKey(),
         startActionPane: ActionPane(
           motion: const StretchMotion(),
+          extentRatio: 0.3,
           dismissible: DismissiblePane(
             onDismissed: () {
               toDoAppCubit.deleteTask(id);
@@ -39,6 +43,24 @@ class TaskItem extends StatelessWidget {
               icon: Icons.delete,
               onPressed: (_) {
                 toDoAppCubit.deleteTask(id);
+              },
+            ),
+          ],
+        ),
+        endActionPane: ActionPane(
+          motion: const StretchMotion(),
+          dragDismissible: true,
+          extentRatio: 0.3,
+          children: [
+            SlidableAction(
+              borderRadius: BorderRadius.circular(5),
+              label: 'Favorite',
+              backgroundColor: CustomColors.kBlueColor,
+              icon: locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == id).first['is_favorite'] == 0
+                  ? Icons.favorite_border_outlined
+                  : Icons.favorite,
+              onPressed: (_) {
+                toDoAppCubit.toggleFavorite(id);
               },
             ),
           ],

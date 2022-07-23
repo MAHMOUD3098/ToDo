@@ -18,6 +18,17 @@ class AllTasksScreen extends StatelessWidget {
       builder: (context, state) {
         return Column(
           children: [
+            locator.get<ToDoAppRepository>().allTasks.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'No tasks exists',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  )
+                : Container(),
             Expanded(
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
