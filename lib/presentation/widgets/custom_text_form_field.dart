@@ -39,7 +39,7 @@ class CustomTextFormField extends StatelessWidget {
                       context: context,
                       initialDate: DateTime(2020, 11, 17),
                       firstDate: DateTime(2017, 1),
-                      lastDate: DateTime(2022, 7),
+                      lastDate: DateTime(2100, 7),
                       helpText: 'Select a date',
                     );
                     if (newDate != null) {

@@ -31,7 +31,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
       setState(() {});
     });
 
-    tasksScheduleCubit.getBarViews();
+    tasksScheduleCubit.getScheduledItems();
+    locator.get<ScheduleScreenRepository>().barViews = tasksScheduleCubit.getBarViews();
+
+
   }
 
   @override
@@ -49,7 +52,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
                 child: TabBarView(
                   controller: locator.get<ScheduleScreenRepository>().controller,
                   physics: const BouncingScrollPhysics(),
-                  children: tasksScheduleCubit.barViews,
+                  children: locator.get<ScheduleScreenRepository>().barViews,
                 ),
               ),
             ],

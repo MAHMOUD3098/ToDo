@@ -3,23 +3,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/data/models/day.dart';
 import 'package:todo/data/repositories/schedule_screen_repository.dart';
+import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_bar_view.dart';
 import 'package:todo/presentation/widgets/custom_weekday_container.dart';
-import 'package:todo/presentation/widgets/task_item.dart';
 
 class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   TasksScheduleCubit() : super(TasksScheduleInitState());
 
   static TasksScheduleCubit get(context) => BlocProvider.of<TasksScheduleCubit>(context);
 
-  List<Widget> barViews = [];
-  List<TaskItem> taskItems = const [];
+  bool matchDates(Day day, String date) {
+    int dayNumber = day.dayNumber;
+    int dayMonth = day.monthOfDay;
+    int dayYear = day.yearOfDay;
+
+    int dateNumber = int.parse(date.split('-')[2]);
+    int dateMonth = int.parse(date.split('-')[1]);
+    int dateYear = int.parse(date.split('-')[0]);
+
+    return (dayNumber == dateNumber) && (dayMonth == dateMonth) && (dayYear == dateYear);
+  }
+
+  void getScheduledItems() {
+    List<Map> tasksToMap = [];
+    String currentDate = '';
+    for (var day in locator.get<ScheduleScreenRepository>().weekDays) {
+      tasksToMap = [];
+      currentDate = '';
+      for (var task in locator.get<ToDoAppRepository>().allTasks) {
+        if (matchDates(day, task['date'])) {
+          currentDate = task['date'];
+          tasksToMap.add(task);
+        }
+      }
+      locator.get<ScheduleScreenRepository>().scheduledTasks.add({currentDate: tasksToMap});
+    }
+  }
 
   void tapWeekDay(int index) {
     locator.get<ScheduleScreenRepository>().controller.index = index;
-
     emit(WeekDayTappedState());
   }
 
@@ -50,13 +74,17 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   }
 
   List<Widget> getBarViews() {
-    if (barViews.isEmpty) {
+    List<Widget> barViews = [];
+    late Day weekDay;
+    if (locator.get<ScheduleScreenRepository>().barViews.isEmpty) {
       for (int i = 0; i < locator.get<ScheduleScreenRepository>().weekDays.length; i++) {
+        weekDay = locator.get<ScheduleScreenRepository>().weekDays[i];
         barViews.add(
           CustomBarView(
             dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
             dayDate: getDate(i),
-            tasks: taskItems,
+            scheduledTasks: locator.get<ScheduleScreenRepository>().scheduledTasks[i]
+                [DateTime(weekDay.yearOfDay, weekDay.monthOfDay, weekDay.dayNumber).toString().split(' ')[0]],
           ),
         );
       }

@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:todo/presentation/widgets/scheduled_task_item.dart';
-import 'package:todo/presentation/widgets/task_item.dart';
 
 class CustomBarView extends StatelessWidget {
   const CustomBarView({
     Key? key,
     required this.dayName,
     required this.dayDate,
-    required this.tasks,
+    required this.scheduledTasks,
   }) : super(key: key);
 
   final String dayName, dayDate;
-  final List<TaskItem> tasks;
+  final List<Map>? scheduledTasks;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +39,7 @@ class CustomBarView extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
+              itemCount: scheduledTasks == null ? 0 : scheduledTasks!.length,
               itemBuilder: (context, index) {
                 return const ScheduledTaskItem();
               },
