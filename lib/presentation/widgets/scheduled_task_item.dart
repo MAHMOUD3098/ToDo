@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
 
 class ScheduledTaskItem extends StatelessWidget {
-  const ScheduledTaskItem({Key? key}) : super(key: key);
+  const ScheduledTaskItem({
+    Key? key,
+    required this.priorityColor,
+    required this.title,
+    required this.date,
+    required this.isCompleted,
+  }) : super(key: key);
+
+  final HexColor priorityColor;
+  final String title, date;
+  final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +23,7 @@ class ScheduledTaskItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: CustomColors.kOrangeColor,
+          color: priorityColor,
           borderRadius: Constants.kWeekDayContainerBorderRadius,
         ),
         width: double.infinity,
@@ -23,12 +34,12 @@ class ScheduledTaskItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '09:00 AM',
+                  date,
                   style: TextStyle(color: CustomColors.kWhiteColor, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  'Design Team Meeting',
+                  title,
                   style: TextStyle(color: CustomColors.kWhiteColor),
                 ),
               ],
@@ -36,7 +47,7 @@ class ScheduledTaskItem extends StatelessWidget {
             Transform.scale(
               scale: 1.2,
               child: Checkbox(
-                value: true,
+                value: isCompleted,
                 fillColor: MaterialStateProperty.all(Colors.transparent),
                 onChanged: (value) {},
                 shape: const CircleBorder(),

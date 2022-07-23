@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/data/models/day.dart';
 import 'package:todo/data/repositories/schedule_screen_repository.dart';
 import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/states.dart';
+import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_bar_view.dart';
 import 'package:todo/presentation/widgets/custom_weekday_container.dart';
@@ -152,5 +154,30 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
       nextWeekDays.add(d);
     }
     return nextWeekDays;
+  }
+
+  HexColor getColor(int priority) {
+    HexColor checkboxColor = CustomColors.kInputFieldsBackgroundColor;
+    switch (priority) {
+      case 1:
+        checkboxColor = CustomColors.kBlueColor;
+        break;
+
+      case 2:
+        checkboxColor = CustomColors.kYellowColor;
+        break;
+
+      case 3:
+        checkboxColor = CustomColors.kOrangeColor;
+        break;
+
+      case 4:
+        checkboxColor = CustomColors.kRedColor;
+        break;
+
+      default:
+    }
+
+    return checkboxColor;
   }
 }

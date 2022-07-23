@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:todo/domain/blocs/tasks_schedule_bloc/cubit.dart';
 import 'package:todo/presentation/widgets/scheduled_task_item.dart';
 
 class CustomBarView extends StatelessWidget {
@@ -14,6 +15,8 @@ class CustomBarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TasksScheduleCubit tasksScheduleCubit = TasksScheduleCubit.get(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -41,7 +44,12 @@ class CustomBarView extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: scheduledTasks == null ? 0 : scheduledTasks!.length,
               itemBuilder: (context, index) {
-                return const ScheduledTaskItem();
+                return ScheduledTaskItem(
+                  title: scheduledTasks![index]['title'],
+                  date: scheduledTasks![index]['start_time'],
+                  priorityColor: tasksScheduleCubit.getColor(scheduledTasks![index]['priority']),
+                  isCompleted: scheduledTasks![index]['is_completed'] == 1 ? true : false,
+                );
               },
             ),
           )
