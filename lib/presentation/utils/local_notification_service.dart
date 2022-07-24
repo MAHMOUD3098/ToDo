@@ -59,31 +59,6 @@ class LocalNotificationService {
     );
 
     return const NotificationDetails(android: androidNotificationDetails, iOS: iOSNotificationDetails);
-
-    // await _flutterLocalNotificationsPlugin.zonedSchedule(
-    //   id,
-    //   title,
-    //   body,
-    //   tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
-    //   const NotificationDetails(
-    //     android: AndroidNotificationDetails(
-    //       'main_channel',
-    //       'Main Channel',
-    //       channelDescription: 'Main channel notifications',
-    //       importance: Importance.max,
-    //       priority: Priority.max,
-    //       // icon: '@drawable/ic_flutternotification',
-    //     ),
-    //     iOS: IOSNotificationDetails(
-    //       sound: 'default.wav',
-    //       presentAlert: true,
-    //       presentBadge: true,
-    //       presentSound: true,
-    //     ),
-    //   ),
-    //   uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-    //   androidAllowWhileIdle: true,
-    // );
   }
 
   Future<void> showNotification({
