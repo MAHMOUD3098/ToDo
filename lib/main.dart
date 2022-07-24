@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/data/repositories/local_notification_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
 import 'package:todo/domain/blocs/tasks_schedule_bloc/cubit.dart';
@@ -8,7 +9,14 @@ import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/themes.dart';
 
 void main() {
-  setup(); //setup the singletone concept for the project
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //setup the singletone concept for the project
+  setup();
+
+  // initialize local notification service
+  locator.get<LocalNotificationRepository>().localNotificationService.initialize();
+
   runApp(const MyApp());
 }
 

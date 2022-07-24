@@ -31,6 +31,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+
     toDoAppCubit = ToDoAppCubit.get(context);
 
     screens = [

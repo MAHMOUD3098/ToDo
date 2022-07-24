@@ -4,7 +4,9 @@
     "autovalidate",
     "cupertino",
     "dehaze",
+    "flutternotification",
     "hexcolor",
+    "rxdart",
     "singletone",
     "sqflite",
     "vsync"
