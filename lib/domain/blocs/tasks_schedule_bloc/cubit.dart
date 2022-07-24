@@ -78,18 +78,16 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   List<Widget> getBarViews() {
     List<Widget> barViews = [];
     late Day weekDay;
-    if (locator.get<ScheduleScreenRepository>().barViews.isEmpty) {
-      for (int i = 0; i < locator.get<ScheduleScreenRepository>().weekDays.length; i++) {
-        weekDay = locator.get<ScheduleScreenRepository>().weekDays[i];
-        barViews.add(
-          CustomBarView(
-            dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
-            dayDate: getDate(i),
-            scheduledTasks: locator.get<ScheduleScreenRepository>().scheduledTasks[i]
-                [DateTime(weekDay.yearOfDay, weekDay.monthOfDay, weekDay.dayNumber).toString().split(' ')[0]],
-          ),
-        );
-      }
+    for (int i = 0; i < locator.get<ScheduleScreenRepository>().weekDays.length; i++) {
+      weekDay = locator.get<ScheduleScreenRepository>().weekDays[i];
+      barViews.add(
+        CustomBarView(
+          dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
+          dayDate: getDate(i),
+          scheduledTasks: locator.get<ScheduleScreenRepository>().scheduledTasks[i]
+              [DateTime(weekDay.yearOfDay, weekDay.monthOfDay, weekDay.dayNumber).toString().split(' ')[0]],
+        ),
+      );
     }
     return barViews;
   }

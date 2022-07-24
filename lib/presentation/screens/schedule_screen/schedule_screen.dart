@@ -27,14 +27,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
       length: locator.get<ScheduleScreenRepository>().weekDays.length,
       vsync: this,
     );
-    locator.get<ScheduleScreenRepository>().controller.addListener(() {
-      setState(() {});
-    });
-
     tasksScheduleCubit.getScheduledItems();
     locator.get<ScheduleScreenRepository>().barViews = tasksScheduleCubit.getBarViews();
 
-
+    locator.get<ScheduleScreenRepository>().controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -53,6 +51,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
                   controller: locator.get<ScheduleScreenRepository>().controller,
                   physics: const BouncingScrollPhysics(),
                   children: locator.get<ScheduleScreenRepository>().barViews,
+                  // children: [
+                  //   Container(),
+                  //   Container(),
+                  //   Container(),
+                  //   Container(),
+                  //   Container(),
+                  //   Container(),
+                  //   Container(),
+                  // ],
                 ),
               ),
             ],
