@@ -124,7 +124,6 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     await getCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
     await getUnCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
     await getFavoriteTasks(locator.get<ToDoAppRepository>().allTasks);
-
     emit(GetDataState());
   }
 

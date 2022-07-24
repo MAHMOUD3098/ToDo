@@ -29,6 +29,8 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   }
 
   void getScheduledItems() {
+    // print(locator.get<ToDoAppRepository>().allTasks);
+
     List<Map> tasksToMap = [];
     String currentDate = '';
     for (var day in locator.get<ScheduleScreenRepository>().weekDays) {
