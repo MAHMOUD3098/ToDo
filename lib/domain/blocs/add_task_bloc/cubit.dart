@@ -1,57 +1,40 @@
+// ignore_for_file: unnecessary_statements
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:todo/data/repositories/add_task_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/states.dart';
-import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
 
 class AddTaskCubit extends Cubit<AddTaskStates> {
   AddTaskCubit() : super(AddTaskInitialState());
 
   static AddTaskCubit get(context) => BlocProvider.of<AddTaskCubit>(context);
 
-  int selectedPriority = 0;
-
-  TextEditingController titleController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-  TextEditingController startTimeController = TextEditingController();
-  TextEditingController endTimeController = TextEditingController();
-  String remindDropDownChosenValue = '';
-  String repeatDropDownChosenValue = '';
-
-  bool isLowPrioritySelected = false;
-  bool isMediumPrioritySelected = false;
-  bool isHighPrioritySelected = false;
-  bool isCriticalPrioritySelected = false;
-
-  HexColor lowPriorityColor = CustomColors.kBlueColor;
-  HexColor mediumPriorityColor = CustomColors.kYellowColor;
-  HexColor highPriorityColor = CustomColors.kOrangeColor;
-  HexColor criticalPriorityColor = CustomColors.kRedColor;
-
   void resetAddTaskScreen() {
     resetPriority();
-    titleController = TextEditingController();
-    dateController = TextEditingController();
-    startTimeController = TextEditingController();
-    endTimeController = TextEditingController();
-    remindDropDownChosenValue = '';
-    repeatDropDownChosenValue = '';
+    locator.get<AddTaskRepository>().titleController = TextEditingController();
+    locator.get<AddTaskRepository>().dateController = TextEditingController();
+    locator.get<AddTaskRepository>().startTimeController = TextEditingController();
+    locator.get<AddTaskRepository>().endTimeController = TextEditingController();
+    locator.get<AddTaskRepository>().remindDropDownChosenValue = '';
+    locator.get<AddTaskRepository>().repeatDropDownChosenValue = '';
   }
 
   void resetPriority() {
-    isLowPrioritySelected = false;
-    isMediumPrioritySelected = false;
-    isHighPrioritySelected = false;
-    isCriticalPrioritySelected = false;
+    locator.get<AddTaskRepository>().isLowPrioritySelected = false;
+    locator.get<AddTaskRepository>().isMediumPrioritySelected = false;
+    locator.get<AddTaskRepository>().isHighPrioritySelected = false;
+    locator.get<AddTaskRepository>().isCriticalPrioritySelected = false;
   }
 
   void selectPriority(int priority) {
     // priority 1:low, 2:medium, 3:high, 4:critical
     resetPriority();
-    priority == 1 ? isLowPrioritySelected = true : false;
-    priority == 2 ? isMediumPrioritySelected = true : false;
-    priority == 3 ? isHighPrioritySelected = true : false;
-    priority == 4 ? isCriticalPrioritySelected = true : false;
+    priority == 1 ? locator.get<AddTaskRepository>().isLowPrioritySelected = true : false;
+    priority == 2 ? locator.get<AddTaskRepository>().isMediumPrioritySelected = true : false;
+    priority == 3 ? locator.get<AddTaskRepository>().isHighPrioritySelected = true : false;
+    priority == 4 ? locator.get<AddTaskRepository>().isCriticalPrioritySelected = true : false;
     emit(PriorityButtonPressedState());
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todo/data/repositories/add_task_repository.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/styles.dart';
 
 class CustomDropDownMenu extends StatefulWidget {
@@ -10,10 +12,13 @@ class CustomDropDownMenu extends StatefulWidget {
     required this.items,
     required this.hint,
     required this.validationErrorMessage,
+    this.isRemindField = false,
+    this.isRepeatField = false,
   }) : super(key: key);
 
   final String title, hint, validationErrorMessage;
   final List<String> items;
+  final bool isRemindField, isRepeatField;
 
   @override
   State<CustomDropDownMenu> createState() => _CustomDropDownMenuState();
@@ -78,11 +83,15 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
                 widget.hint,
               ),
               onChanged: (String? value) {
-                setState(() {
+                if (value != null) {
                   _chosenValue = value;
-                  // AddTaskCubit()..remindDropDownChosenValue = value!;
-                  // print(AddTaskCubit()..remindDropDownChosenValue.toString());
-                });
+                  if (widget.isRemindField) {
+                    locator.get<AddTaskRepository>().remindDropDownChosenValue = value;
+                  } else if (widget.isRepeatField) {
+                    locator.get<AddTaskRepository>().repeatDropDownChosenValue = value;
+                  }
+                }
+                setState(() {});
               },
             ),
           ),

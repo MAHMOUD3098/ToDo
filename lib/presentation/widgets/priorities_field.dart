@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todo/data/repositories/add_task_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/priority_button.dart';
 
 class PrioritiesField extends StatefulWidget {
@@ -26,48 +28,52 @@ class _PrioritiesFieldState extends State<PrioritiesField> {
           child: PriorityButton(
             onTap: () {
               addTaskCubit.selectPriority(1);
-              addTaskCubit.selectedPriority = 1;
+              locator.get<AddTaskRepository>().selectedPriority = 1;
               setState(() {});
             },
-            priorityColor: addTaskCubit.isLowPrioritySelected ? CustomColors.kBlueColor : CustomColors.kInputFieldsBackgroundColor,
+            priorityColor:
+                locator.get<AddTaskRepository>().isLowPrioritySelected ? CustomColors.kBlueColor : CustomColors.kInputFieldsBackgroundColor,
             priorityText: 'Low',
-            priorityTextColor: addTaskCubit.isLowPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
+            priorityTextColor: locator.get<AddTaskRepository>().isLowPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
           ),
         ),
         Expanded(
           child: PriorityButton(
             onTap: () {
               addTaskCubit.selectPriority(2);
-              addTaskCubit.selectedPriority = 2;
+              locator.get<AddTaskRepository>().selectedPriority = 2;
               setState(() {});
             },
-            priorityColor: addTaskCubit.isMediumPrioritySelected ? CustomColors.kYellowColor : CustomColors.kInputFieldsBackgroundColor,
+            priorityColor:
+                locator.get<AddTaskRepository>().isMediumPrioritySelected ? CustomColors.kYellowColor : CustomColors.kInputFieldsBackgroundColor,
             priorityText: 'Medium',
-            priorityTextColor: addTaskCubit.isMediumPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
+            priorityTextColor: locator.get<AddTaskRepository>().isMediumPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
           ),
         ),
         Expanded(
           child: PriorityButton(
             onTap: () {
               addTaskCubit.selectPriority(3);
-              addTaskCubit.selectedPriority = 3;
+              locator.get<AddTaskRepository>().selectedPriority = 3;
               setState(() {});
             },
-            priorityColor: addTaskCubit.isHighPrioritySelected ? CustomColors.kOrangeColor : CustomColors.kInputFieldsBackgroundColor,
+            priorityColor:
+                locator.get<AddTaskRepository>().isHighPrioritySelected ? CustomColors.kOrangeColor : CustomColors.kInputFieldsBackgroundColor,
             priorityText: 'High',
-            priorityTextColor: addTaskCubit.isHighPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
+            priorityTextColor: locator.get<AddTaskRepository>().isHighPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
           ),
         ),
         Expanded(
           child: PriorityButton(
             onTap: () {
               addTaskCubit.selectPriority(4);
-              addTaskCubit.selectedPriority = 4;
+              locator.get<AddTaskRepository>().selectedPriority = 4;
               setState(() {});
             },
-            priorityColor: addTaskCubit.isCriticalPrioritySelected ? CustomColors.kRedColor : CustomColors.kInputFieldsBackgroundColor,
+            priorityColor:
+                locator.get<AddTaskRepository>().isCriticalPrioritySelected ? CustomColors.kRedColor : CustomColors.kInputFieldsBackgroundColor,
             priorityText: 'Critical',
-            priorityTextColor: addTaskCubit.isCriticalPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
+            priorityTextColor: locator.get<AddTaskRepository>().isCriticalPrioritySelected ? CustomColors.kWhiteColor : Colors.black,
           ),
         ),
       ],
