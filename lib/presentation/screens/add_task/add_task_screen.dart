@@ -130,10 +130,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         const SizedBox(height: 20),
                         CustomButton(
                           text: 'Create Task',
-                          onPressed: () {
+                          onPressed: () async {
                             if (_addTaskFormKey.currentState!.validate()) {
                               ToDoAppCubit cubit = ToDoAppCubit.get(context);
-                              if (cubit.addTask(
+                              if (await cubit.addTask(
                                 Task(
                                   locator.get<AddTaskRepository>().titleController.text,
                                   locator.get<AddTaskRepository>().dateController.text,

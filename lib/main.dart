@@ -21,7 +21,7 @@ void callbackDispatcher() {
               id: 1,
               title: 'title',
               body: 'body',
-              seconds: 3,
+              duration: Duration(seconds: 3),
             );
       }
     }

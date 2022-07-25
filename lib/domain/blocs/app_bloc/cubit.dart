@@ -3,9 +3,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/task.dart';
+import 'package:todo/data/repositories/local_notification_repository.dart';
 import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/local_notification_service.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -100,6 +102,7 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
 
   Future<void> getAllTasks(Database db) async {
     locator.get<ToDoAppRepository>().allTasks = await db.rawQuery('SELECT * FROM Tasks');
+    // print(locator.get<ToDoAppRepository>().allTasks);
   }
 
   Future<void> getFavoriteTasks(List<Map<dynamic, dynamic>> allTasks) async {
@@ -120,25 +123,40 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     }
   }
 
-  void getData(Database db) async {
-    await getAllTasks(db);
-    await getCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
-    await getUnCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
-    await getFavoriteTasks(locator.get<ToDoAppRepository>().allTasks);
-    emit(GetDataState());
+  Future<void> getData(Database db) async {
+    getAllTasks(db)
+        .then(
+          (value) => {
+            getCompletedTasks(locator.get<ToDoAppRepository>().allTasks).then(
+              (value) => {
+                getUnCompletedTasks(locator.get<ToDoAppRepository>().allTasks).then(
+                  (value) => {
+                    getFavoriteTasks(locator.get<ToDoAppRepository>().allTasks),
+                  },
+                )
+              },
+            ),
+          },
+        )
+        .then((value) => {emit(GetDataState())});
   }
 
-  bool addTask(Task task) {
+  Future<bool> addTask(Task task) async {
     locator.get<ToDoAppRepository>().database.transaction((txn) {
       return txn
           .rawInsert(
         'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed, is_favorite) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0, 0)',
       )
-          .then((id) {
+          .then((id) async {
         if (id != 0) {
-          getData(locator.get<ToDoAppRepository>().database);
-          setTaskRepeatFrequency(id);
+          await getData(locator.get<ToDoAppRepository>().database);
+          // setTaskRepeatFrequency(id),
+          // setTaskLocalNotification(id),
           emit(AddTaskState());
+
+          Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == id.toString()).first;
+          print(task);
+
           return true;
         }
       });
@@ -197,8 +215,8 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     return frequency;
   }
 
-  void setTaskRepeatFrequency(int taskId) async {
-    Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId).first;
+  Future<void> setTaskRepeatFrequency(int taskId) async {
+    Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId.toString()).first;
 
     await Workmanager().registerPeriodicTask(
       taskId.toString(),
@@ -217,4 +235,47 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
       ),
     );
   }
+
+  void setTaskReminder(int taskId) async {
+    Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId.toString()).first;
+
+    await Workmanager().registerOneOffTask(
+      taskId.toString(),
+      'Reminder',
+      inputData: <String, dynamic>{
+        'id': taskId,
+        'title': 'reminder of ' + task['title'],
+      },
+      constraints: Constraints(
+        networkType: NetworkType.not_required,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+    );
+  }
+
+  Future<void> setTaskLocalNotification(int taskId) async {
+    Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId).first;
+
+    await locator.get<LocalNotificationRepository>().localNotificationService.showScheduledNotification(
+          id: taskId,
+          title: task['title'],
+          body: task['date'],
+          duration: getLocalNotificationDuration(task),
+        );
+  }
+}
+
+Duration getLocalNotificationDuration(Map task) {
+  int hours = int.parse(task['startTime'].split(':')[0]);
+  int minutes = int.parse(task['startTime'].split(':')[1]);
+  int year = int.parse(task['date'].split(':')[0]);
+  int month = int.parse(task['date'].split(':')[1]);
+  int day = int.parse(task['date'].split(':')[2]);
+
+  DateTime taskDate = DateTime(year, month, day, hours, minutes);
+
+  return taskDate.difference(DateTime.now());
 }

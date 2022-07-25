@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/styles.dart';
@@ -37,7 +38,7 @@ class CustomTextFormField extends StatelessWidget {
                 ? () async {
                     final DateTime? newDate = await showDatePicker(
                       context: context,
-                      initialDate: DateTime(2020, 11, 17),
+                      initialDate: DateTime.now(),
                       firstDate: DateTime(2017, 1),
                       lastDate: DateTime(2100, 7),
                       helpText: 'Select a date',
@@ -51,11 +52,14 @@ class CustomTextFormField extends StatelessWidget {
                         showTimePicker(
                           context: context,
                           initialTime: const TimeOfDay(hour: 00, minute: 00),
-                        ).then((value) {
-                          if (value != null) {
-                            controller.text = value.format(context);
-                          }
-                        });
+                        ).then(
+                          (value) {
+                            if (value != null) {
+                              DateTime date = DateFormat.jm().parse(value.format(context));
+                              controller.text = DateFormat("HH:mm").format(date);
+                            }
+                          },
+                        );
                       }
                     : () {},
             decoration: InputDecoration(

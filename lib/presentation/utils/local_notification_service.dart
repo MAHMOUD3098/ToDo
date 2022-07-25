@@ -85,7 +85,7 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required int seconds,
+    required Duration duration,
   }) async {
     print('here');
     final details = await getNotificationDetails(id, title, body);
@@ -93,7 +93,7 @@ class LocalNotificationService {
       id,
       title,
       body,
-      tz.TZDateTime.from(DateTime.now().add(Duration(seconds: seconds)), tz.local),
+      tz.TZDateTime.from(DateTime.now().add(duration), tz.local),
       details,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
