@@ -13,7 +13,6 @@ class LocalNotificationService {
   final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
   Future<void> initialize() async {
-    print('in');
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings(
@@ -24,9 +23,7 @@ class LocalNotificationService {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-      onDidReceiveLocalNotification: (id, title, body, payload) {
-        // print('id $id');
-      },
+      onDidReceiveLocalNotification: (id, title, body, payload) {},
     );
 
     final InitializationSettings initializationSettings = InitializationSettings(
@@ -87,7 +84,6 @@ class LocalNotificationService {
     required String body,
     required Duration duration,
   }) async {
-    print('here');
     final details = await getNotificationDetails(id, title, body);
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       id,

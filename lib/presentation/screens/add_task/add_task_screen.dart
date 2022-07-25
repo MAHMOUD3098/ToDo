@@ -133,7 +133,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           onPressed: () async {
                             if (_addTaskFormKey.currentState!.validate()) {
                               ToDoAppCubit cubit = ToDoAppCubit.get(context);
-                              if (await cubit.addTask(
+                              int id = await cubit.addTask(
                                 Task(
                                   locator.get<AddTaskRepository>().titleController.text,
                                   locator.get<AddTaskRepository>().dateController.text,
@@ -143,8 +143,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   locator.get<AddTaskRepository>().repeatDropDownChosenValue,
                                   locator.get<AddTaskRepository>().selectedPriority,
                                 ),
-                              )) {}
-                              Navigator.pop(context);
+                              );
+                              if (id != 0) {
+                                cubit.setTaskLocalNotification(id);
+                                Navigator.pop(context);
+                              }
                             }
                           },
                         ),
