@@ -126,10 +126,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         const SizedBox(height: 20),
                         CustomButton(
                           text: 'Create Task',
-                          onPressed: () {
+                          onPressed: () async {
                             if (_addTaskFormKey.currentState!.validate()) {
                               ToDoAppCubit cubit = ToDoAppCubit.get(context);
-                              if (cubit.addTask(
+                              bool isAdded = await cubit.addTask(
                                 Task(
                                   addTaskCubit.titleController.text,
                                   addTaskCubit.dateController.text,
@@ -139,7 +139,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   addTaskCubit.repeatDropDownChosenValue,
                                   addTaskCubit.selectedPriority,
                                 ),
-                              )) {}
+                              );
+                              if (isAdded) {}
                               Navigator.pop(context);
                             }
                           },

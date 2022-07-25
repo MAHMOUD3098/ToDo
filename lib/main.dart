@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) {
+          create: (context)  {
             return ToDoAppCubit()..createDatabase();
           },
         ),

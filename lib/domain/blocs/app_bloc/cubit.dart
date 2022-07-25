@@ -20,13 +20,12 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     emit(TapBarTappedState());
   }
 
-  void changeCheckBoxValue(bool value, int id) {
-    locator.get<ToDoAppRepository>().allTasks.forEach((element) {
+  Future<void> changeCheckBoxValue(bool value, int id) async {
+    locator.get<ToDoAppRepository>().allTasks.forEach((element) async {
       if (element['id'] == id) {
-        locator.get<ToDoAppRepository>().database.rawUpdate('UPDATE Tasks SET is_completed = ? WHERE id = ?', [(value ? 1 : 0), '$id']).then((value) {
-          emit(ChangedTaskItemCheckBoxValueState());
-          getData(locator.get<ToDoAppRepository>().database);
-        });
+        await locator.get<ToDoAppRepository>().database.rawUpdate('UPDATE Tasks SET is_completed = ? WHERE id = ?', [(value ? 1 : 0), '$id']);
+        emit(ChangedTaskItemCheckBoxValueState());
+        await getData(locator.get<ToDoAppRepository>().database);
       }
     });
   }
@@ -63,8 +62,8 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
   // ---------------------DB interactions--------------------- //
 
   String path = '';
-  void createDatabase() async {
-    var databasesPath = await getDatabasesPath();
+  Future<void> createDatabase() async {
+    String databasesPath = await getDatabasesPath();
     path = join(databasesPath, 'TodoApp.db');
 
     openDatabase(
@@ -88,7 +87,64 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     });
   }
 
-  Future<void> getCompletedTasks(List<Map<dynamic, dynamic>> allTasks) async {
+  Future<void> getAllTasks(Database db) async {
+    locator.get<ToDoAppRepository>().allTasks = await db.rawQuery('SELECT * FROM Tasks');
+  }
+
+  Future<void> getData(Database db) async {
+    await getAllTasks(db);
+
+    getCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
+
+    getUnCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
+
+    getFavoriteTasks(locator.get<ToDoAppRepository>().allTasks);
+
+    emit(GetDataState());
+  }
+
+  Future<bool> addTask(Task task) async {
+    late int id;
+    await locator.get<ToDoAppRepository>().database.transaction((txn) async {
+      id = await txn.rawInsert(
+        'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed, is_favorite) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0, 0)',
+      );
+    });
+
+    await getData(locator.get<ToDoAppRepository>().database);
+    print(locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == id.toString()));
+    emit(AddTaskState());
+
+    return id != 0;
+  }
+
+  Future<void> toggleFavorite(int id) async {
+    locator.get<ToDoAppRepository>().allTasks.forEach((element) async {
+      if (element['id'] == id) {
+        await locator
+            .get<ToDoAppRepository>()
+            .database
+            .rawUpdate('UPDATE Tasks SET is_favorite = ? WHERE id = ?', [(element['is_favorite'] == 0 ? 1 : 0), '$id']);
+        emit(AddToFavoriteButtonPressedState());
+        await getData(locator.get<ToDoAppRepository>().database);
+      }
+    });
+  }
+
+  Future<void> deleteTask(int id) async {
+    await locator.get<ToDoAppRepository>().database.rawDelete('DELETE FROM Tasks WHERE id = ?', ['$id']);
+    emit(DeleteTaskState());
+    await getData(locator.get<ToDoAppRepository>().database);
+  }
+
+  Future<void> dropDatabase() async {
+    var databasesPath = await getDatabasesPath();
+    path = join(databasesPath, 'TodoApp.db');
+    await deleteDatabase(path);
+    emit(DropDatabaseState());
+  }
+
+  void getCompletedTasks(List<Map<dynamic, dynamic>> allTasks) {
     locator.get<ToDoAppRepository>().completedTasks.clear();
     for (var element in allTasks) {
       if (element['is_completed'] == 1) {
@@ -97,11 +153,7 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     }
   }
 
-  Future<void> getAllTasks(Database db) async {
-    locator.get<ToDoAppRepository>().allTasks = await db.rawQuery('SELECT * FROM Tasks');
-  }
-
-  Future<void> getFavoriteTasks(List<Map<dynamic, dynamic>> allTasks) async {
+  void getFavoriteTasks(List<Map<dynamic, dynamic>> allTasks) {
     locator.get<ToDoAppRepository>().favoriteTasks.clear();
     for (var element in allTasks) {
       if (element['is_favorite'] == 1) {
@@ -110,64 +162,12 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     }
   }
 
-  Future<void> getUnCompletedTasks(List<Map<dynamic, dynamic>> allTasks) async {
+  void getUnCompletedTasks(List<Map<dynamic, dynamic>> allTasks) {
     locator.get<ToDoAppRepository>().unCompletedTasks.clear();
     for (var element in allTasks) {
       if (element['is_completed'] == 0) {
         locator.get<ToDoAppRepository>().unCompletedTasks.add(element);
       }
     }
-  }
-
-  void getData(Database db) async {
-    await getAllTasks(db);
-    await getCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
-    await getUnCompletedTasks(locator.get<ToDoAppRepository>().allTasks);
-    await getFavoriteTasks(locator.get<ToDoAppRepository>().allTasks);
-    emit(GetDataState());
-  }
-
-  bool addTask(Task task) {
-    locator.get<ToDoAppRepository>().database.transaction((txn) {
-      return txn
-          .rawInsert(
-        'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed, is_favorite) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0, 0)',
-      )
-          .then((value) {
-        if (value != 0) {
-          getData(locator.get<ToDoAppRepository>().database);
-          emit(AddTaskState());
-          return true;
-        }
-      });
-    });
-    return false;
-  }
-
-  void toggleFavorite(int id) {
-    locator.get<ToDoAppRepository>().allTasks.forEach((element) {
-      if (element['id'] == id) {
-        locator
-            .get<ToDoAppRepository>()
-            .database
-            .rawUpdate('UPDATE Tasks SET is_favorite = ? WHERE id = ?', [(element['is_favorite'] == 0 ? 1 : 0), '$id']).then((value) {
-          emit(AddToFavoriteButtonPressedState());
-          getData(locator.get<ToDoAppRepository>().database);
-        });
-      }
-    });
-  }
-
-  void deleteTask(int id) {
-    locator.get<ToDoAppRepository>().database.rawDelete('DELETE FROM Tasks WHERE id = ?', ['$id']).then((value) {
-      emit(DeleteTaskState());
-      getData(locator.get<ToDoAppRepository>().database);
-    });
-  }
-
-  void dropDatabase() async {
-    var databasesPath = await getDatabasesPath();
-    path = join(databasesPath, 'TodoApp.db');
-    await deleteDatabase(path).then((value) => {emit(DropDatabaseState())});
   }
 }
