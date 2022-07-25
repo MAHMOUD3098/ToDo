@@ -7,6 +7,7 @@ import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
 import 'package:todo/presentation/utils/colors.dart';
 import 'package:todo/presentation/utils/locator.dart';
+import 'package:workmanager/workmanager.dart';
 
 class ToDoAppCubit extends Cubit<ToDoAppStates> {
   ToDoAppCubit() : super(ToDoAppInitialState());
@@ -133,9 +134,10 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
           .rawInsert(
         'INSERT INTO Tasks(title, date, start_time, end_time, remind, repeat, priority, is_completed, is_favorite) VALUES("${task.taskTitle}", "${task.taskDate}", "${task.startTime}", "${task.endTime}", "${task.remind}", "${task.repeat}", ${task.priority}, 0, 0)',
       )
-          .then((value) {
-        if (value != 0) {
+          .then((id) {
+        if (id != 0) {
           getData(locator.get<ToDoAppRepository>().database);
+          setTaskRepeatFrequency(id);
           emit(AddTaskState());
           return true;
         }
@@ -169,5 +171,50 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     var databasesPath = await getDatabasesPath();
     path = join(databasesPath, 'TodoApp.db');
     await deleteDatabase(path).then((value) => {emit(DropDatabaseState())});
+  }
+
+  Duration getTaskRepeatFrequency(Map task) {
+    Duration frequency = Duration();
+
+    switch (task['repeat']) {
+      case 'Daily':
+        frequency = Duration(days: 1);
+        break;
+
+      case 'Weekly':
+        frequency = Duration(days: 7);
+        break;
+
+      case 'Monthly':
+        frequency = Duration(days: 30);
+        break;
+
+      case 'Yearly':
+        frequency = Duration(days: 365);
+        break;
+      default:
+    }
+    return frequency;
+  }
+
+  void setTaskRepeatFrequency(int taskId) async {
+    Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId).first;
+
+    await Workmanager().registerPeriodicTask(
+      taskId.toString(),
+      task['title'],
+      inputData: <String, dynamic>{
+        'id': taskId,
+        'title': task['title'],
+      },
+      frequency: getTaskRepeatFrequency(task),
+      constraints: Constraints(
+        networkType: NetworkType.not_required,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+    );
   }
 }

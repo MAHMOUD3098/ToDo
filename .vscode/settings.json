@@ -9,6 +9,7 @@
     "rxdart",
     "singletone",
     "sqflite",
-    "vsync"
+    "vsync",
+    "workmanager"
   ]
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/data/repositories/local_notification_repository.dart';
@@ -7,6 +8,26 @@ import 'package:todo/domain/blocs/tasks_schedule_bloc/cubit.dart';
 import 'package:todo/presentation/screens/board_layout/board_layout.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/utils/themes.dart';
+import 'package:workmanager/workmanager.dart';
+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    setup();
+    locator.get<LocalNotificationRepository>().localNotificationService.initialize();
+
+    if (inputData != null && inputData.isNotEmpty) {
+      if (inputData['is_scheduled'] == true) {
+        locator.get<LocalNotificationRepository>().localNotificationService.showScheduledNotification(
+              id: 1,
+              title: 'title',
+              body: 'body',
+              seconds: 3,
+            );
+      }
+    }
+    return Future.value(true);
+  });
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +37,8 @@ void main() {
 
   // initialize local notification service
   locator.get<LocalNotificationRepository>().localNotificationService.initialize();
+
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
   runApp(const MyApp());
 }
