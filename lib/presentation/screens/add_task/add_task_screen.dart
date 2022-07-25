@@ -131,23 +131,39 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         CustomButton(
                           text: 'Create Task',
                           onPressed: () async {
+                            ToDoAppCubit cubit = ToDoAppCubit.get(context);
+
                             if (_addTaskFormKey.currentState!.validate()) {
-                              ToDoAppCubit cubit = ToDoAppCubit.get(context);
-                              int id = await cubit.addTask(
-                                Task(
-                                  locator.get<AddTaskRepository>().titleController.text,
-                                  locator.get<AddTaskRepository>().dateController.text,
-                                  locator.get<AddTaskRepository>().startTimeController.text,
-                                  locator.get<AddTaskRepository>().endTimeController.text,
-                                  locator.get<AddTaskRepository>().remindDropDownChosenValue,
-                                  locator.get<AddTaskRepository>().repeatDropDownChosenValue,
-                                  locator.get<AddTaskRepository>().selectedPriority,
-                                ),
-                              );
-                              if (id != 0) {
-                                cubit.setTaskLocalNotification(id);
-                                cubit.setTaskReminder(id);
-                                Navigator.pop(context);
+                              if (cubit.checkTaskTimes(locator.get<AddTaskRepository>().startTimeController.text,
+                                      locator.get<AddTaskRepository>().endTimeController.text) ==
+                                  false) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Task End Time must be after Task Start Time !!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else {
+                                int id = await cubit.addTask(
+                                  Task(
+                                    locator.get<AddTaskRepository>().titleController.text,
+                                    locator.get<AddTaskRepository>().dateController.text,
+                                    locator.get<AddTaskRepository>().startTimeController.text,
+                                    locator.get<AddTaskRepository>().endTimeController.text,
+                                    locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                    locator.get<AddTaskRepository>().repeatDropDownChosenValue,
+                                    locator.get<AddTaskRepository>().selectedPriority,
+                                  ),
+                                );
+                                if (id != 0) {
+                                  cubit.setTaskLocalNotification(id);
+                                  cubit.setTaskReminder(id);
+                                  Navigator.pop(context);
+                                }
                               }
                             }
                           },

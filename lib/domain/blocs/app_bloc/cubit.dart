@@ -278,4 +278,19 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
 
     return remindDate;
   }
+
+  bool checkTaskTimes(String startTime, String endTime) {
+    if (startTime.isEmpty && endTime.isEmpty) return false;
+
+    int startTimeHour = int.parse(startTime.split(':')[0]);
+    int startTimeMinutes = int.parse(startTime.split(':')[1]);
+
+    int endTimeHour = int.parse(endTime.split(':')[0]);
+    int endTimeMinutes = int.parse(endTime.split(':')[1]);
+
+    if (startTimeHour == endTimeHour) {
+      if (startTimeMinutes >= endTimeMinutes) return false;
+    }
+    return true;
+  }
 }
