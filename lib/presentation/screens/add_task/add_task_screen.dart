@@ -146,6 +146,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               );
                               if (id != 0) {
                                 cubit.setTaskLocalNotification(id);
+                                cubit.setTaskReminder(id);
                                 Navigator.pop(context);
                               }
                             }

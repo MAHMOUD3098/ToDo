@@ -82,14 +82,14 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required Duration duration,
+    required Duration runAfter,
   }) async {
     final details = await getNotificationDetails(id, title, body);
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
-      tz.TZDateTime.from(DateTime.now().add(duration), tz.local),
+      tz.TZDateTime.from(DateTime.now().add(runAfter), tz.local),
       details,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,

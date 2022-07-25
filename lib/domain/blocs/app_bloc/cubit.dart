@@ -195,6 +195,30 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     return frequency;
   }
 
+  Duration getTaskReminderTime(Map task) {
+    Duration remindTime = Duration();
+
+    switch (task['remind']) {
+      case '1 day before':
+        remindTime = Duration(days: 1);
+        break;
+
+      case '1 hour before':
+        remindTime = Duration(hours: 1);
+        break;
+
+      case '30 min before':
+        remindTime = Duration(minutes: 30);
+        break;
+
+      case '10 min before':
+        remindTime = Duration(minutes: 10);
+        break;
+      default:
+    }
+    return remindTime;
+  }
+
   Future<void> setTaskRepeatFrequency(int taskId) async {
     Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId).first;
 
@@ -219,21 +243,12 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
   Future<void> setTaskReminder(int taskId) async {
     Map task = locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == taskId).first;
 
-    await Workmanager().registerOneOffTask(
-      taskId.toString(),
-      'Reminder',
-      inputData: <String, dynamic>{
-        'id': taskId,
-        'title': 'reminder of ' + task['title'],
-      },
-      constraints: Constraints(
-        networkType: NetworkType.not_required,
-        requiresBatteryNotLow: false,
-        requiresCharging: false,
-        requiresDeviceIdle: false,
-        requiresStorageNotLow: false,
-      ),
-    );
+    await locator.get<LocalNotificationRepository>().localNotificationService.showScheduledNotification(
+          id: taskId,
+          title: 'Reminder',
+          body: 'Reminder of ' + task['title'],
+          runAfter: getReminderDate(task).difference(DateTime.now()),
+        );
   }
 
   Future<void> setTaskLocalNotification(int taskId) async {
@@ -243,19 +258,24 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
           id: taskId,
           title: task['title'],
           body: task['date'],
-          duration: getLocalNotificationDuration(task),
+          runAfter: getTaskDate(task).difference(DateTime.now()),
         );
   }
 
-  Duration getLocalNotificationDuration(Map task) {
+  DateTime getTaskDate(Map task) {
     int hours = int.parse(task['start_time'].split(':')[0]);
     int minutes = int.parse(task['start_time'].split(':')[1]);
     int year = int.parse(task['date'].split('-')[0]);
     int month = int.parse(task['date'].split('-')[1]);
     int day = int.parse(task['date'].split('-')[2]);
 
-    DateTime taskDate = DateTime(year, month, day, hours, minutes);
+    return DateTime(year, month, day, hours, minutes);
+  }
 
-    return taskDate.difference(DateTime.now());
+  DateTime getReminderDate(Map task) {
+    DateTime taskDate = getTaskDate(task);
+    DateTime remindDate = taskDate.subtract(getTaskReminderTime(task));
+
+    return remindDate;
   }
 }
