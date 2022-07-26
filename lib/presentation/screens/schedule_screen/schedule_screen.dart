@@ -27,7 +27,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
       length: locator.get<ScheduleScreenRepository>().weekDays.length,
       vsync: this,
     );
-    tasksScheduleCubit.getScheduledItems();
+
+    locator.get<ScheduleScreenRepository>().scheduledTasks = tasksScheduleCubit.getScheduledItems();
+
     locator.get<ScheduleScreenRepository>().barViews = tasksScheduleCubit.getBarViews();
 
     locator.get<ScheduleScreenRepository>().controller.addListener(() {

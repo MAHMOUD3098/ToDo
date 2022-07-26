@@ -28,7 +28,8 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     return (dayNumber == dateNumber) && (dayMonth == dateMonth) && (dayYear == dateYear);
   }
 
-  void getScheduledItems() {
+  List<Map<String, List<Map>>> getScheduledItems() {
+    List<Map<String, List<Map>>> scheduledTasks = [];
     List<Map> tasksToMap = [];
     String currentDate = '';
     for (var day in locator.get<ScheduleScreenRepository>().weekDays) {
@@ -40,8 +41,9 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
           tasksToMap.add(task);
         }
       }
-      locator.get<ScheduleScreenRepository>().scheduledTasks.add({currentDate: tasksToMap});
+      scheduledTasks.add({currentDate: tasksToMap});
     }
+    return scheduledTasks;
   }
 
   void tapWeekDay(int index) {
