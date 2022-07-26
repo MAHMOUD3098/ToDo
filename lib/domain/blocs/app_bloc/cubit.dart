@@ -3,6 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo/data/models/task.dart';
+import 'package:todo/data/repositories/add_task_repository.dart';
 import 'package:todo/data/repositories/local_notification_repository.dart';
 import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
@@ -317,6 +318,16 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     DateTime remindDate = getReminderDate(startTime, date, remind);
 
     if (remindDate.difference(DateTime.now()).isNegative || remindDate.difference(DateTime.now()) == Duration.zero) {
+      return false;
+    }
+    return true;
+  }
+
+  bool validatePrioritySelected() {
+    if (locator.get<AddTaskRepository>().isLowPrioritySelected == false &&
+        locator.get<AddTaskRepository>().isHighPrioritySelected == false &&
+        locator.get<AddTaskRepository>().isMediumPrioritySelected == false &&
+        locator.get<AddTaskRepository>().isCriticalPrioritySelected == false) {
       return false;
     }
     return true;

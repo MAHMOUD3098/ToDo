@@ -141,16 +141,40 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             String remind = locator.get<AddTaskRepository>().remindDropDownChosenValue;
 
                             if (_addTaskFormKey.currentState!.validate()) {
-                              if (cubit.checkTaskTimes(startTime, endTime) == false) {
-                                Constants.showSnackBar(context, 'Task End-Time must be after Task Start-Time !!');
+                              if (cubit.validatePrioritySelected() == false) {
+                                Constants.showSnackBar(context, 'Please Choose Priority !!');
                               } else {
-                                if (cubit.checkTaskStartTime(startTime, date) == false) {
-                                  Constants.showSnackBar(context, 'Start time can not be in the past !!');
+                                if (cubit.checkTaskTimes(startTime, endTime) == false) {
+                                  Constants.showSnackBar(context, 'Task End-Time must be after Task Start-Time !!');
                                 } else {
-                                  if (remind != 'Never') {
-                                    if (cubit.checkReminderAvailability(startTime, date, remind) == false) {
-                                      Constants.showSnackBar(
-                                          context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
+                                  if (cubit.checkTaskStartTime(startTime, date) == false) {
+                                    Constants.showSnackBar(context, 'Start time can not be in the past !!');
+                                  } else {
+                                    if (remind != 'Never') {
+                                      if (cubit.checkReminderAvailability(startTime, date, remind) == false) {
+                                        Constants.showSnackBar(
+                                            context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
+                                      } else {
+                                        int addedTaskId = await cubit.addTask(
+                                          Task(
+                                            locator.get<AddTaskRepository>().titleController.text,
+                                            locator.get<AddTaskRepository>().dateController.text,
+                                            locator.get<AddTaskRepository>().startTimeController.text,
+                                            locator.get<AddTaskRepository>().endTimeController.text,
+                                            locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                            locator.get<AddTaskRepository>().repeatDropDownChosenValue,
+                                            locator.get<AddTaskRepository>().selectedPriority,
+                                          ),
+                                        );
+                                        if (addedTaskId != 0) {
+                                          await cubit.setTaskLocalNotification(addedTaskId);
+                                          await cubit.setTaskReminder(addedTaskId);
+                                          if (locator.get<AddTaskRepository>().repeatDropDownChosenValue != 'Never') {
+                                            await cubit.setTaskRepeatFrequency(addedTaskId);
+                                          }
+                                          Navigator.pop(context);
+                                        }
+                                      }
                                     } else {
                                       int addedTaskId = await cubit.addTask(
                                         Task(
@@ -165,31 +189,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       );
                                       if (addedTaskId != 0) {
                                         await cubit.setTaskLocalNotification(addedTaskId);
-                                        await cubit.setTaskReminder(addedTaskId);
                                         if (locator.get<AddTaskRepository>().repeatDropDownChosenValue != 'Never') {
                                           await cubit.setTaskRepeatFrequency(addedTaskId);
                                         }
                                         Navigator.pop(context);
                                       }
-                                    }
-                                  } else {
-                                    int addedTaskId = await cubit.addTask(
-                                      Task(
-                                        locator.get<AddTaskRepository>().titleController.text,
-                                        locator.get<AddTaskRepository>().dateController.text,
-                                        locator.get<AddTaskRepository>().startTimeController.text,
-                                        locator.get<AddTaskRepository>().endTimeController.text,
-                                        locator.get<AddTaskRepository>().remindDropDownChosenValue,
-                                        locator.get<AddTaskRepository>().repeatDropDownChosenValue,
-                                        locator.get<AddTaskRepository>().selectedPriority,
-                                      ),
-                                    );
-                                    if (addedTaskId != 0) {
-                                      await cubit.setTaskLocalNotification(addedTaskId);
-                                      if (locator.get<AddTaskRepository>().repeatDropDownChosenValue != 'Never') {
-                                        await cubit.setTaskRepeatFrequency(addedTaskId);
-                                      }
-                                      Navigator.pop(context);
                                     }
                                   }
                                 }
