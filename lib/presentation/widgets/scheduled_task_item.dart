@@ -48,6 +48,7 @@ class ScheduledTaskItem extends StatelessWidget {
               scale: 1.2,
               child: Checkbox(
                 value: isCompleted,
+                overlayColor: MaterialStateProperty.all(Colors.transparent),
                 fillColor: MaterialStateProperty.all(Colors.transparent),
                 onChanged: (value) {},
                 shape: const CircleBorder(),
