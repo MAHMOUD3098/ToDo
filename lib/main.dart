@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/data/repositories/local_notification_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
@@ -39,8 +40,9 @@ void main() {
   locator.get<LocalNotificationRepository>().localNotificationService.initialize();
 
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
