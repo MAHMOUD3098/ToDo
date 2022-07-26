@@ -19,9 +19,9 @@ void callbackDispatcher() {
       if (inputData['is_scheduled'] == true) {
         locator.get<LocalNotificationRepository>().localNotificationService.showScheduledNotification(
               id: 1,
-              title: 'title',
-              body: 'body',
-              runAfter: Duration(seconds: 3),
+              title: inputData['title'],
+              body: 'freq body',
+              runAfter: Duration(seconds: 0),
             );
       }
     }

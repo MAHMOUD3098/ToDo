@@ -160,8 +160,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                     ),
                                   );
                                   if (id != 0) {
-                                    cubit.setTaskLocalNotification(id);
-                                    cubit.setTaskReminder(id);
+                                    await cubit.setTaskLocalNotification(id);
+                                    await cubit.setTaskReminder(id);
+                                    await cubit.setTaskRepeatFrequency(id);
                                     Navigator.pop(context);
                                   }
                                 }

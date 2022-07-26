@@ -51,7 +51,7 @@ class CustomTextFormField extends StatelessWidget {
                     ? () {
                         showTimePicker(
                           context: context,
-                          initialTime: TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+                          initialTime: TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute + 1),
                         ).then(
                           (value) {
                             if (value != null) {

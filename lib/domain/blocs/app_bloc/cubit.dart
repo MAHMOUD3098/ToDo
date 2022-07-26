@@ -224,11 +224,13 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
 
     await Workmanager().registerPeriodicTask(
       taskId.toString(),
-      task['title'],
+      'Repeat',
       inputData: <String, dynamic>{
         'id': taskId,
-        'title': task['title'],
+        'title': 'repeat freq',
+        'is_scheduled': true,
       },
+      initialDelay: getTaskRepeatFrequency(task),
       frequency: getTaskRepeatFrequency(task),
       constraints: Constraints(
         networkType: NetworkType.not_required,
