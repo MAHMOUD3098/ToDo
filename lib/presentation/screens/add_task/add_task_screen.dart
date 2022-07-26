@@ -5,6 +5,7 @@ import 'package:todo/data/repositories/add_task_repository.dart';
 import 'package:todo/domain/blocs/add_task_bloc/cubit.dart';
 import 'package:todo/domain/blocs/add_task_bloc/states.dart';
 import 'package:todo/domain/blocs/app_bloc/cubit.dart';
+import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:todo/presentation/widgets/custom_app_bar.dart';
 import 'package:todo/presentation/widgets/custom_button.dart';
@@ -137,32 +138,38 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               if (cubit.checkTaskTimes(locator.get<AddTaskRepository>().startTimeController.text,
                                       locator.get<AddTaskRepository>().endTimeController.text) ==
                                   false) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Task End Time must be after Task Start Time !!',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
+                                Constants.showSnackBar(
+                                  context,
+                                  'Task End-Time must be after Task Start-Time !!',
                                 );
                               } else {
-                                int id = await cubit.addTask(
-                                  Task(
-                                    locator.get<AddTaskRepository>().titleController.text,
-                                    locator.get<AddTaskRepository>().dateController.text,
-                                    locator.get<AddTaskRepository>().startTimeController.text,
-                                    locator.get<AddTaskRepository>().endTimeController.text,
-                                    locator.get<AddTaskRepository>().remindDropDownChosenValue,
-                                    locator.get<AddTaskRepository>().repeatDropDownChosenValue,
-                                    locator.get<AddTaskRepository>().selectedPriority,
-                                  ),
-                                );
-                                if (id != 0) {
-                                  cubit.setTaskLocalNotification(id);
-                                  cubit.setTaskReminder(id);
-                                  Navigator.pop(context);
+                                if (cubit.checkReminderAvailability(
+                                      locator.get<AddTaskRepository>().startTimeController.text,
+                                      locator.get<AddTaskRepository>().dateController.text,
+                                      locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                    ) ==
+                                    false) {
+                                  Constants.showSnackBar(
+                                    context,
+                                    'The time left for starting the task is not enough for adding reminder !!',
+                                  );
+                                } else {
+                                  int id = await cubit.addTask(
+                                    Task(
+                                      locator.get<AddTaskRepository>().titleController.text,
+                                      locator.get<AddTaskRepository>().dateController.text,
+                                      locator.get<AddTaskRepository>().startTimeController.text,
+                                      locator.get<AddTaskRepository>().endTimeController.text,
+                                      locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                      locator.get<AddTaskRepository>().repeatDropDownChosenValue,
+                                      locator.get<AddTaskRepository>().selectedPriority,
+                                    ),
+                                  );
+                                  if (id != 0) {
+                                    cubit.setTaskLocalNotification(id);
+                                    cubit.setTaskReminder(id);
+                                    Navigator.pop(context);
+                                  }
                                 }
                               }
                             }

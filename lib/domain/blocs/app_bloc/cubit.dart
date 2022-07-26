@@ -195,10 +195,10 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     return frequency;
   }
 
-  Duration getTaskReminderTime(Map task) {
+  Duration getTaskReminderTime(String remind) {
     Duration remindTime = Duration();
 
-    switch (task['remind']) {
+    switch (remind) {
       case '1 day before':
         remindTime = Duration(days: 1);
         break;
@@ -247,7 +247,7 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
           id: taskId,
           title: 'Reminder',
           body: 'Reminder of ' + task['title'],
-          runAfter: getReminderDate(task).difference(DateTime.now()),
+          runAfter: getReminderDate(task['start_time'], task['date'], task['remind']).difference(DateTime.now()),
         );
   }
 
@@ -258,23 +258,23 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
           id: taskId,
           title: task['title'],
           body: task['date'],
-          runAfter: getTaskDate(task).difference(DateTime.now()),
+          runAfter: getTaskDate(task['start_time'], task['date']).difference(DateTime.now()),
         );
   }
 
-  DateTime getTaskDate(Map task) {
-    int hours = int.parse(task['start_time'].split(':')[0]);
-    int minutes = int.parse(task['start_time'].split(':')[1]);
-    int year = int.parse(task['date'].split('-')[0]);
-    int month = int.parse(task['date'].split('-')[1]);
-    int day = int.parse(task['date'].split('-')[2]);
+  DateTime getTaskDate(String startTime, String date) {
+    int hours = int.parse(startTime.split(':')[0]);
+    int minutes = int.parse(startTime.split(':')[1]);
+    int year = int.parse(date.split('-')[0]);
+    int month = int.parse(date.split('-')[1]);
+    int day = int.parse(date.split('-')[2]);
 
     return DateTime(year, month, day, hours, minutes);
   }
 
-  DateTime getReminderDate(Map task) {
-    DateTime taskDate = getTaskDate(task);
-    DateTime remindDate = taskDate.subtract(getTaskReminderTime(task));
+  DateTime getReminderDate(String startTime, String date, String remind) {
+    DateTime taskDate = getTaskDate(startTime, date);
+    DateTime remindDate = taskDate.subtract(getTaskReminderTime(remind));
 
     return remindDate;
   }
@@ -288,8 +288,22 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     int endTimeHour = int.parse(endTime.split(':')[0]);
     int endTimeMinutes = int.parse(endTime.split(':')[1]);
 
-    if (startTimeHour == endTimeHour) {
+    if (startTimeHour > endTimeHour)
+      return false;
+
+    else if (startTimeHour == endTimeHour) {
       if (startTimeMinutes >= endTimeMinutes) return false;
+    }
+
+    return true;
+  }
+
+  bool checkReminderAvailability(String startTime, String date, String remind) {
+    DateTime taskDate = getTaskDate(startTime, date);
+    DateTime remindDate = getReminderDate(startTime, date, remind);
+
+    if (remindDate.difference(taskDate) == Duration.zero || remindDate.difference(taskDate).isNegative) {
+      return false;
     }
     return true;
   }
