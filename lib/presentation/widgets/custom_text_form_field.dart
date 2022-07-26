@@ -39,7 +39,7 @@ class CustomTextFormField extends StatelessWidget {
                     final DateTime? newDate = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
-                      firstDate: DateTime(2017, 1),
+                      firstDate: DateTime.now(),
                       lastDate: DateTime(2100, 7),
                       helpText: 'Select a date',
                     );
@@ -51,7 +51,7 @@ class CustomTextFormField extends StatelessWidget {
                     ? () {
                         showTimePicker(
                           context: context,
-                          initialTime: const TimeOfDay(hour: 00, minute: 00),
+                          initialTime: TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                         ).then(
                           (value) {
                             if (value != null) {

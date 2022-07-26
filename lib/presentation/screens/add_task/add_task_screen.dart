@@ -133,26 +133,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           text: 'Create Task',
                           onPressed: () async {
                             ToDoAppCubit cubit = ToDoAppCubit.get(context);
+                            String startTime = locator.get<AddTaskRepository>().startTimeController.text;
+                            String endTime = locator.get<AddTaskRepository>().endTimeController.text;
+                            String date = locator.get<AddTaskRepository>().dateController.text;
+                            String remind = locator.get<AddTaskRepository>().remindDropDownChosenValue;
 
                             if (_addTaskFormKey.currentState!.validate()) {
-                              if (cubit.checkTaskTimes(locator.get<AddTaskRepository>().startTimeController.text,
-                                      locator.get<AddTaskRepository>().endTimeController.text) ==
-                                  false) {
-                                Constants.showSnackBar(
-                                  context,
-                                  'Task End-Time must be after Task Start-Time !!',
-                                );
+                              if (cubit.checkTaskTimes(startTime, endTime) == false) {
+                                Constants.showSnackBar(context, 'Task End-Time must be after Task Start-Time !!');
                               } else {
-                                if (cubit.checkReminderAvailability(
-                                      locator.get<AddTaskRepository>().startTimeController.text,
-                                      locator.get<AddTaskRepository>().dateController.text,
-                                      locator.get<AddTaskRepository>().remindDropDownChosenValue,
-                                    ) ==
-                                    false) {
+                                if (cubit.checkTaskStartTime(startTime, date) == false) {
+                                  Constants.showSnackBar(context, 'Start time can not be in the past !!');
+                                } else if (cubit.checkReminderAvailability(startTime, date, remind) == false) {
                                   Constants.showSnackBar(
-                                    context,
-                                    'The time left for starting the task is not enough for adding reminder !!',
-                                  );
+                                      context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
                                 } else {
                                   int id = await cubit.addTask(
                                     Task(

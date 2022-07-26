@@ -290,7 +290,6 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
 
     if (startTimeHour > endTimeHour)
       return false;
-
     else if (startTimeHour == endTimeHour) {
       if (startTimeMinutes >= endTimeMinutes) return false;
     }
@@ -298,11 +297,24 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
     return true;
   }
 
+  bool checkTaskStartTime(String startTime, String taskDate) {
+    DateTime date = DateTime(
+      int.parse(taskDate.split('-')[0]),
+      int.parse(taskDate.split('-')[1]),
+      int.parse(taskDate.split('-')[2]),
+      int.parse(startTime.split(':')[0]),
+      int.parse(startTime.split(':')[1]),
+    );
+    if (date.difference(DateTime.now()).isNegative) {
+      return false;
+    }
+    return true;
+  }
+
   bool checkReminderAvailability(String startTime, String date, String remind) {
-    DateTime taskDate = getTaskDate(startTime, date);
     DateTime remindDate = getReminderDate(startTime, date, remind);
 
-    if (remindDate.difference(taskDate) == Duration.zero || remindDate.difference(taskDate).isNegative) {
+    if (remindDate.difference(DateTime.now()).isNegative || remindDate.difference(DateTime.now()) == Duration.zero) {
       return false;
     }
     return true;
