@@ -105,6 +105,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           title: 'Remind',
                           hint: 'Please choose reminder time',
                           items: [
+                            'Never',
                             '1 day before',
                             '1 hour before',
                             '30 min before',
@@ -118,6 +119,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           title: 'Repeat',
                           hint: 'Please choose repeat',
                           items: [
+                            'Never',
                             'Daily',
                             'Weekly',
                             'Monthly',
@@ -144,26 +146,51 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               } else {
                                 if (cubit.checkTaskStartTime(startTime, date) == false) {
                                   Constants.showSnackBar(context, 'Start time can not be in the past !!');
-                                } else if (cubit.checkReminderAvailability(startTime, date, remind) == false) {
-                                  Constants.showSnackBar(
-                                      context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
                                 } else {
-                                  int id = await cubit.addTask(
-                                    Task(
-                                      locator.get<AddTaskRepository>().titleController.text,
-                                      locator.get<AddTaskRepository>().dateController.text,
-                                      locator.get<AddTaskRepository>().startTimeController.text,
-                                      locator.get<AddTaskRepository>().endTimeController.text,
-                                      locator.get<AddTaskRepository>().remindDropDownChosenValue,
-                                      locator.get<AddTaskRepository>().repeatDropDownChosenValue,
-                                      locator.get<AddTaskRepository>().selectedPriority,
-                                    ),
-                                  );
-                                  if (id != 0) {
-                                    await cubit.setTaskLocalNotification(id);
-                                    await cubit.setTaskReminder(id);
-                                    await cubit.setTaskRepeatFrequency(id);
-                                    Navigator.pop(context);
+                                  if (remind != 'Never') {
+                                    if (cubit.checkReminderAvailability(startTime, date, remind) == false) {
+                                      Constants.showSnackBar(
+                                          context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
+                                    } else {
+                                      int addedTaskId = await cubit.addTask(
+                                        Task(
+                                          locator.get<AddTaskRepository>().titleController.text,
+                                          locator.get<AddTaskRepository>().dateController.text,
+                                          locator.get<AddTaskRepository>().startTimeController.text,
+                                          locator.get<AddTaskRepository>().endTimeController.text,
+                                          locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                          locator.get<AddTaskRepository>().repeatDropDownChosenValue,
+                                          locator.get<AddTaskRepository>().selectedPriority,
+                                        ),
+                                      );
+                                      if (addedTaskId != 0) {
+                                        await cubit.setTaskLocalNotification(addedTaskId);
+                                        await cubit.setTaskReminder(addedTaskId);
+                                        if (locator.get<AddTaskRepository>().repeatDropDownChosenValue != 'Never') {
+                                          await cubit.setTaskRepeatFrequency(addedTaskId);
+                                        }
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  } else {
+                                    int addedTaskId = await cubit.addTask(
+                                      Task(
+                                        locator.get<AddTaskRepository>().titleController.text,
+                                        locator.get<AddTaskRepository>().dateController.text,
+                                        locator.get<AddTaskRepository>().startTimeController.text,
+                                        locator.get<AddTaskRepository>().endTimeController.text,
+                                        locator.get<AddTaskRepository>().remindDropDownChosenValue,
+                                        locator.get<AddTaskRepository>().repeatDropDownChosenValue,
+                                        locator.get<AddTaskRepository>().selectedPriority,
+                                      ),
+                                    );
+                                    if (addedTaskId != 0) {
+                                      await cubit.setTaskLocalNotification(addedTaskId);
+                                      if (locator.get<AddTaskRepository>().repeatDropDownChosenValue != 'Never') {
+                                        await cubit.setTaskRepeatFrequency(addedTaskId);
+                                      }
+                                      Navigator.pop(context);
+                                    }
                                   }
                                 }
                               }
