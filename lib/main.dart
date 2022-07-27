@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        theme: Themes.lightTheme,
+        theme: Themes.darkTheme,
         home: const BoardLayout(),
       ),
     );

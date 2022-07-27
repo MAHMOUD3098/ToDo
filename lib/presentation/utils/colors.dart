@@ -10,4 +10,6 @@ class CustomColors {
   static HexColor kTabBarBorderColor = HexColor('#EEEFF2');
   static HexColor kInputFieldsTextColor = HexColor('#CCCCCC');
   static HexColor kInputFieldsBackgroundColor = HexColor('#F9F9F9');
+
+  static HexColor kDarkBackGroundColor = HexColor('#22272E');
 }

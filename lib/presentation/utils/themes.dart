@@ -28,4 +28,31 @@ class Themes {
       ),
     ),
   );
+
+  static ThemeData darkTheme = ThemeData(
+    // scaffoldBackgroundColor: CustomColors.kDarkBackGroundColor,
+    colorScheme: ColorScheme.dark(),
+    appBarTheme: AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      titleTextStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 25.0,
+      ),
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
+    ),
+    textTheme: const TextTheme(
+      bodyText1: TextStyle(
+        fontSize: 18.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+    ),
+  );
 }
