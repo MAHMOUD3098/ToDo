@@ -46,7 +46,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
             int.parse(task['date'].toString().split('-')[1]),
             int.parse(task['date'].toString().split('-')[2]),
           );
-          if (currentDate.difference(taskDate).inDays == 7) {
+          if (currentDate.difference(taskDate).inDays % 7 == 0) {
             tasksToMap.add(task);
           }
         } else if (task['repeat'] == 'Monthly') {
@@ -55,7 +55,16 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
             int.parse(task['date'].toString().split('-')[1]),
             int.parse(task['date'].toString().split('-')[2]),
           );
-          if (currentDate.difference(taskDate).inDays == 30) {
+          if (currentDate.difference(taskDate).inDays % 30 == 0) {
+            tasksToMap.add(task);
+          }
+        } else if (task['repeat'] == 'Yearly') {
+          DateTime taskDate = DateTime(
+            int.parse(task['date'].toString().split('-')[0]),
+            int.parse(task['date'].toString().split('-')[1]),
+            int.parse(task['date'].toString().split('-')[2]),
+          );
+          if (currentDate.difference(taskDate).inDays % 365 == 0) {
             tasksToMap.add(task);
           }
         }
