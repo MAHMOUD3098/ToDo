@@ -31,17 +31,36 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
   List<Map<String, List<Map>>> getScheduledItems() {
     List<Map<String, List<Map>>> scheduledTasks = [];
     List<Map> tasksToMap = [];
-    String currentDate = '';
+    late DateTime currentDate;
     for (var day in locator.get<ScheduleScreenRepository>().weekDays) {
       tasksToMap = [];
-      currentDate = '';
+      currentDate = DateTime(day.yearOfDay, day.monthOfDay, day.dayNumber);
       for (var task in locator.get<ToDoAppRepository>().allTasks) {
         if (matchDates(day, task['date'])) {
-          currentDate = task['date'];
           tasksToMap.add(task);
+        } else if (task['repeat'] == 'Daily') {
+          tasksToMap.add(task);
+        } else if (task['repeat'] == 'Weekly') {
+          DateTime taskDate = DateTime(
+            int.parse(task['date'].toString().split('-')[0]),
+            int.parse(task['date'].toString().split('-')[1]),
+            int.parse(task['date'].toString().split('-')[2]),
+          );
+          if (currentDate.difference(taskDate).inDays == 7) {
+            tasksToMap.add(task);
+          }
+        } else if (task['repeat'] == 'Monthly') {
+          DateTime taskDate = DateTime(
+            int.parse(task['date'].toString().split('-')[0]),
+            int.parse(task['date'].toString().split('-')[1]),
+            int.parse(task['date'].toString().split('-')[2]),
+          );
+          if (currentDate.difference(taskDate).inDays == 30) {
+            tasksToMap.add(task);
+          }
         }
       }
-      scheduledTasks.add({currentDate: tasksToMap});
+      scheduledTasks.add({currentDate.toString().split(' ')[0]: tasksToMap});
     }
     return scheduledTasks;
   }
@@ -173,7 +192,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     int numOfDaysInCurrentMonth = getNumOfDaysInMonth(month);
 
     DateTime nextDayDate = DateTime(year, month, day);
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i <= 7; i++) {
       year = nextDayDate.year;
       month = nextDayDate.month;
       day = nextDayDate.day;
