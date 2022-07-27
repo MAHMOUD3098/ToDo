@@ -7,10 +7,11 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     required this.title,
     required this.hasActions,
     this.actions,
+    this.hasBackIcon = false,
   }) : super(key: key);
 
   final String title;
-  final bool hasActions;
+  final bool hasActions, hasBackIcon;
   final List<Widget>? actions;
 
   @override
@@ -22,14 +23,18 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       title: Text(
         title,
       ),
-      leading: InkWell(
-        onTap: () {
-          NavigationHelper.goBackToHome(context);
-        },
-        child: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-        ),
-      ),
+      leading: hasBackIcon
+          ? InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {
+                NavigationHelper.goBackToHome(context);
+              },
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+              ),
+            )
+          : null,
       actions: hasActions ? actions : null,
     );
   }

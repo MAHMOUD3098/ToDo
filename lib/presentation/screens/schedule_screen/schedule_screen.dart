@@ -43,7 +43,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
       listener: (context, state) => {},
       builder: (context, state) {
         return Scaffold(
-          appBar: const CustomAppBar(title: 'Schedule', hasActions: false),
+          appBar: const CustomAppBar(
+            title: 'Schedule',
+            hasActions: false,
+            hasBackIcon: true,
+          ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -53,15 +57,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
                   controller: locator.get<ScheduleScreenRepository>().controller,
                   physics: const BouncingScrollPhysics(),
                   children: locator.get<ScheduleScreenRepository>().barViews,
-                  // children: [
-                  //   Container(),
-                  //   Container(),
-                  //   Container(),
-                  //   Container(),
-                  //   Container(),
-                  //   Container(),
-                  //   Container(),
-                  // ],
                 ),
               ),
             ],

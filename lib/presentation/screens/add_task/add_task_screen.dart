@@ -48,6 +48,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         return Scaffold(
           appBar: const CustomAppBar(
             title: 'Add Task',
+            hasBackIcon: true,
             hasActions: false,
           ),
           body: SingleChildScrollView(

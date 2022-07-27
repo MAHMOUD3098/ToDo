@@ -59,6 +59,7 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
         return Scaffold(
           appBar: CustomAppBar(
             title: 'Board',
+            hasBackIcon: false,
             hasActions: true,
             actions: [
               IconButton(
