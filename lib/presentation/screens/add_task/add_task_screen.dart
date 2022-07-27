@@ -65,14 +65,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         CustomTextFormField(
                           controller: locator.get<AddTaskRepository>().titleController,
                           title: 'Title',
-                          hintText: 'please type title',
+                          hintText: 'title',
                           validationErrorMessage: 'validationErrorMessage',
                         ),
                         const SizedBox(height: 10),
                         CustomTextFormField(
                           controller: locator.get<AddTaskRepository>().dateController,
                           title: 'Date',
-                          hintText: 'please type title',
+                          hintText: 'date',
                           isDateField: true,
                           validationErrorMessage: 'validationErrorMessage',
                         ),
@@ -83,7 +83,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               child: CustomTextFormField(
                                 controller: locator.get<AddTaskRepository>().startTimeController,
                                 title: 'Start Time',
-                                hintText: ' -- : -- ',
+                                hintText: 'start time',
                                 isTimeField: true,
                                 validationErrorMessage: 'validationErrorMessage',
                               ),
@@ -93,7 +93,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               child: CustomTextFormField(
                                 controller: locator.get<AddTaskRepository>().endTimeController,
                                 title: 'End Time',
-                                hintText: ' -- : -- ',
+                                hintText: 'end time',
                                 isTimeField: true,
                                 validationErrorMessage: 'validationErrorMessage',
                               ),
@@ -103,7 +103,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         const SizedBox(height: 10),
                         const CustomDropDownMenu(
                           title: 'Remind',
-                          hint: 'Please choose reminder time',
+                          hint: 'reminder',
                           items: [
                             'Never',
                             '1 day before',
@@ -117,7 +117,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         const SizedBox(height: 10),
                         const CustomDropDownMenu(
                           title: 'Repeat',
-                          hint: 'Please choose repeat',
+                          hint: 'repeat',
                           items: [
                             'Never',
                             'Daily',

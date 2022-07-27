@@ -48,7 +48,6 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
               border: Border.all(color: errorBorderColor),
             ),
             child: DropdownButtonFormField<String>(
-              // autovalidateMode: AutovalidateMode.always,
               decoration: const InputDecoration.collapsed(
                 hintText: '',
               ),
@@ -66,8 +65,6 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
               },
               focusColor: Colors.white,
               isExpanded: true,
-              style: const TextStyle(color: Colors.white),
-              iconEnabledColor: Colors.black,
               items: widget.items.map<DropdownMenuItem<String>>(
                 (String value) {
                   return DropdownMenuItem<String>(
