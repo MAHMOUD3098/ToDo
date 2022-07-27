@@ -41,9 +41,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddTaskCubit, AddTaskStates>(
-      listener: (context, state) => {
-        debugPrint(state.toString()),
-      },
+      listener: (context, state) => {},
       builder: (context, state) {
         return Scaffold(
           appBar: const CustomAppBar(

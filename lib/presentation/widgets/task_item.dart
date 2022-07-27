@@ -31,8 +31,8 @@ class TaskItem extends StatelessWidget {
           motion: const StretchMotion(),
           extentRatio: 0.3,
           dismissible: DismissiblePane(
-            onDismissed: () {
-              toDoAppCubit.deleteTask(id);
+            onDismissed: () async {
+              await toDoAppCubit.deleteTask(id);
             },
           ),
           children: [
@@ -41,8 +41,8 @@ class TaskItem extends StatelessWidget {
               label: 'delete',
               backgroundColor: Colors.red,
               icon: Icons.delete,
-              onPressed: (_) {
-                toDoAppCubit.deleteTask(id);
+              onPressed: (_) async {
+                await toDoAppCubit.deleteTask(id);
               },
             ),
           ],
@@ -59,8 +59,8 @@ class TaskItem extends StatelessWidget {
               icon: locator.get<ToDoAppRepository>().allTasks.where((element) => element['id'] == id).first['is_favorite'] == 0
                   ? Icons.favorite_border_outlined
                   : Icons.favorite,
-              onPressed: (_) {
-                toDoAppCubit.toggleFavorite(id);
+              onPressed: (_) async {
+                await toDoAppCubit.toggleFavorite(id);
               },
             ),
           ],
@@ -85,9 +85,9 @@ class TaskItem extends StatelessWidget {
                       color: toDoAppCubit.getCheckBoxColor(id),
                       width: 1.5,
                     ),
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       if (value != null) {
-                        toDoAppCubit.changeCheckBoxValue(value, id);
+                        await toDoAppCubit.changeCheckBoxValue(value, id);
                       }
                     },
                   ),

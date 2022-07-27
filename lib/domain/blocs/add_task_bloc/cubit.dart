@@ -37,9 +37,4 @@ class AddTaskCubit extends Cubit<AddTaskStates> {
     priority == 4 ? locator.get<AddTaskRepository>().isCriticalPrioritySelected = true : false;
     emit(PriorityButtonPressedState());
   }
-
-  // ---------------------DB interactions--------------------- //
-
-  // ---------------------DB interactions--------------------- //
-
 }

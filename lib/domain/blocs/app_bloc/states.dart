@@ -10,8 +10,6 @@ class OpenDatabaseState extends ToDoAppStates {}
 
 class DropDatabaseState extends ToDoAppStates {}
 
-class LoadingState extends ToDoAppStates {}
-
 class GetDataState extends ToDoAppStates {}
 
 class AddTaskState extends ToDoAppStates {}

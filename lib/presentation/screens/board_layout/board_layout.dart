@@ -46,15 +46,14 @@ class _BoardLayoutState extends State<BoardLayout> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    locator.get<ToDoAppRepository>().controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ToDoAppCubit, ToDoAppStates>(
-      listener: (context, state) {
-        debugPrint(state.toString());
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           appBar: CustomAppBar(

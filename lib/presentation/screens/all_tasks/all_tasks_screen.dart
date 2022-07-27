@@ -14,7 +14,9 @@ class AllTasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ToDoAppCubit, ToDoAppStates>(
-      listener: (context, state) => {},
+      listener: (context, state) => {
+        print(state.toString()),
+      },
       builder: (context, state) {
         return Column(
           children: [

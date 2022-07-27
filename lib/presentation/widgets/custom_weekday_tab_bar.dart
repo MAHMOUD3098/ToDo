@@ -16,7 +16,7 @@ class CustomWeekDaysTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TasksScheduleCubit, TasksScheduleStates>(
-      listener: (context, state) => {debugPrint(state.toString())},
+      listener: (context, state) => {},
       builder: (context, state) {
         return DefaultTabController(
           length: locator.get<ScheduleScreenRepository>().weekDays.length,
