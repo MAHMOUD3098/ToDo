@@ -77,6 +77,19 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     return '$dayNum $monthName, $year';
   }
 
+  String getFullDayName(String shortenedWeekDayName) {
+    Map<String, String> weekDays = {
+      'Sun': 'Sunday',
+      'Mon': 'Monday',
+      'Tue': 'Tuesday',
+      'Wed': 'Wednesday',
+      'Thu': 'Thursday',
+      'Fri': 'Friday',
+      'Sat': 'Saturday',
+    };
+    return weekDays[shortenedWeekDayName]!;
+  }
+
   List<Widget> getBarViews() {
     List<Widget> barViews = [];
     late Day weekDay;
@@ -84,7 +97,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
       weekDay = locator.get<ScheduleScreenRepository>().weekDays[i];
       barViews.add(
         CustomBarView(
-          dayName: locator.get<ScheduleScreenRepository>().weekDays[i].dayName,
+          dayName: getFullDayName(locator.get<ScheduleScreenRepository>().weekDays[i].dayName),
           dayDate: getDate(i),
           scheduledTasks: locator.get<ScheduleScreenRepository>().scheduledTasks[i]
               [DateTime(weekDay.yearOfDay, weekDay.monthOfDay, weekDay.dayNumber).toString().split(' ')[0]],
