@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:path/path.dart';
@@ -8,6 +9,7 @@ import 'package:todo/data/repositories/local_notification_repository.dart';
 import 'package:todo/data/repositories/todo_app_repository.dart';
 import 'package:todo/domain/blocs/app_bloc/states.dart';
 import 'package:todo/presentation/utils/colors.dart';
+import 'package:todo/presentation/utils/constants.dart';
 import 'package:todo/presentation/utils/locator.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -330,6 +332,38 @@ class ToDoAppCubit extends Cubit<ToDoAppStates> {
         locator.get<AddTaskRepository>().isCriticalPrioritySelected == false) {
       return false;
     }
+    return true;
+  }
+
+  bool validateData(BuildContext context) {
+    String startTime = locator.get<AddTaskRepository>().startTimeController.text;
+    String endTime = locator.get<AddTaskRepository>().endTimeController.text;
+    String date = locator.get<AddTaskRepository>().dateController.text;
+    String remind = locator.get<AddTaskRepository>().remindDropDownChosenValue;
+
+    // check if priority is selected
+    if (validatePrioritySelected() == false) {
+      Constants.showSnackBar(context, 'Please Choose Priority !!');
+      return false;
+    }
+    // compare start time and end time
+    if (checkTaskTimes(startTime, endTime) == false) {
+      Constants.showSnackBar(context, 'Task End-Time must be after Task Start-Time !!');
+      return false;
+    }
+
+    // check if task start time is available
+    if (checkTaskStartTime(startTime, date) == false) {
+      Constants.showSnackBar(context, 'Start time can not be in the past !!');
+      return false;
+    }
+
+    // check if reminder can be set
+    if (checkReminderAvailability(startTime, date, remind) == false) {
+      Constants.showSnackBar(context, 'The time left for starting the task is not enough for adding ($remind) reminder !!');
+      return false;
+    }
+
     return true;
   }
 }
