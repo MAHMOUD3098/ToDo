@@ -126,12 +126,38 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     return Day(DateFormat('EEEE').format(dateTime).substring(0, 3), day, month, year);
   }
 
-  int getNumOfDays(int month) {
+  int getNumOfDaysInMonth(int month) {
     int numOfDays = 0;
     for (DateTime indexDay = DateTime(2022, month, 1); indexDay.month == month; indexDay = indexDay.add(const Duration(days: 1))) {
       numOfDays++;
     }
     return numOfDays;
+  }
+
+  List<Day> getAllDays(DateTime date) {
+    List<Day> allDays = [];
+    int year = date.year;
+    int month = date.month;
+    int day = date.day;
+    int numOfDays = 0;
+    int daysPerYear = 0;
+
+    for (int i = 1; i <= 2; i++) {
+      daysPerYear = 0;
+      for (int j = month; j <= 12; j++) {
+        numOfDays = 0;
+        for (DateTime indexDay = DateTime(year, j, day); indexDay.month == j; indexDay = indexDay.add(const Duration(days: 1))) {
+          allDays.add(getDay(indexDay));
+          numOfDays++;
+        }
+        daysPerYear += numOfDays;
+        day = 1;
+        month++;
+      }
+      month = 1;
+      year++;
+    }
+    return allDays;
   }
 
   List<Day> getNextWeek(DateTime date) {
@@ -144,7 +170,7 @@ class TasksScheduleCubit extends Cubit<TasksScheduleStates> {
     int month = today.month;
     int year = today.year;
 
-    int numOfDaysInCurrentMonth = getNumOfDays(month);
+    int numOfDaysInCurrentMonth = getNumOfDaysInMonth(month);
 
     DateTime nextDayDate = DateTime(year, month, day);
     for (int i = 0; i < 7; i++) {

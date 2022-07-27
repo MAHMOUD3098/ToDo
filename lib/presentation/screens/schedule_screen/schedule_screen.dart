@@ -22,7 +22,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
     super.initState();
     tasksScheduleCubit = TasksScheduleCubit.get(context);
 
-    locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getNextWeek(DateTime.now());
+    // locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getNextWeek(DateTime.now());
+    if (locator.get<ScheduleScreenRepository>().weekDays.isEmpty) {
+      locator.get<ScheduleScreenRepository>().weekDays = tasksScheduleCubit.getAllDays(DateTime.now());
+    }
+    print(locator.get<ScheduleScreenRepository>().weekDays.length);
+
     locator.get<ScheduleScreenRepository>().controller = TabController(
       length: locator.get<ScheduleScreenRepository>().weekDays.length,
       vsync: this,
